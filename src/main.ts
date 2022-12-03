@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, h, provide } from "vue";
 import { createPinia } from "pinia";
 import "./assets/styles/main.css";
 
@@ -10,7 +10,16 @@ import * as icons from "./icons";
 import App from "./App.vue";
 import router from "./router";
 
-const app = createApp(App);
+import { DefaultApolloClient } from "@vue/apollo-composable";
+import { apolloClient } from "./services/apolloClient";
+
+const app = createApp({
+  setup() {
+    provide(DefaultApolloClient, apolloClient);
+  },
+
+  render: () => h(App),
+});
 
 library.add(icons);
 
