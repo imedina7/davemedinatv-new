@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import SocialLinks from "../components/SocialLinks.vue";
 import DaveLogo from "../components/DaveLogo.vue";
 </script>
 <template>
-  <main class="bg-black h-screen flex items-center justify-center">
+  <main class="bg-black h-screen flex flex-col items-center justify-center">
     <div class="w-full px-5 md:px-20 lg:px-40">
       <DaveLogo />
     </div>
-    <div></div>
+    <SocialLinks />
   </main>
 </template>
