@@ -6,9 +6,9 @@ module.exports = {
     service: {
       name: "my-app",
       // URL to the GraphQL API
-      url: `https://graphql.contentful.com/content/v1/spaces/${process.env.VITE_SPACE_ID}`,
+      url: `${process.env.VITE_CONTENTFUL_GRAPHQL_URI}${process.env.VITE_CONTENTFUL_SPACE_ID}`,
       headers: {
-        authorization: `Bearer ${process.env.VITE_ACCESS_TOKEN}`,
+        authorization: `Bearer ${process.env.VITE_CONTENTFUL_ACCESS_TOKEN}`,
       },
     },
     // Files processed by the extension

@@ -17,6 +17,9 @@ const ALL_POSTS_QUERY = gql`
         }
         publishedAt
         duration
+        media {
+          url
+        }
       }
     }
   }
@@ -36,15 +39,20 @@ if (error) console.log(error);
           :key="video.sys.id"
           class="w-80 h-20 border border-gray-700 rounded-sm bg-gray-900"
         >
-          <span class="font-bold text-sm">{{ video.title }}</span>
-          <div v-if="video.thumbnail">
-            <img :src="video.thumbnail.url" :alt="`${video.title} thumbnail`" />
-          </div>
-          <div>
-            {{ new Date(video.duration).getMinutes() }}:{{
-              new Date(video.duration).getSeconds()
-            }}
-          </div>
+          <a :href="video.media.url">
+            <span class="font-bold text-sm">{{ video.title }}</span>
+            <div v-if="video.thumbnail">
+              <img
+                :src="video.thumbnail.url"
+                :alt="`${video.title} thumbnail`"
+              />
+            </div>
+            <div>
+              {{ new Date(video.duration).getMinutes() }}:{{
+                new Date(video.duration).getSeconds()
+              }}
+            </div>
+          </a>
         </div>
       </div>
     </div>
