@@ -32,7 +32,7 @@ if (error) console.log(error);
 <template>
   <main class="bg-black h-screen">
     <div class="container text-gray-200">
-      <h1>Videos</h1>
+      <h1 class="font-doppio">Videos</h1>
       <div class="">
         <div
           v-for="video in videos"
