@@ -1,59 +1,20 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import gql from "graphql-tag";
+import { ALL_VIDEOS_QUERY } from "@/services/queries";
 import { useQuery } from "@vue/apollo-composable";
+import VideoItem from "@/components/VideoItem.vue";
 
-const ALL_POSTS_QUERY = gql`
-  query ALL_POSTS_QUERY {
-    videoCollection {
-      total
-      items {
-        sys {
-          id
-        }
-        title
-        thumbnail {
-          url
-        }
-        publishedAt
-        duration
-        media {
-          url
-        }
-      }
-    }
-  }
-`;
-
-const { result, loading, error } = useQuery(ALL_POSTS_QUERY);
+const { result, loading, error } = useQuery(ALL_VIDEOS_QUERY);
 const videos = computed(() => result.value?.videoCollection.items ?? []);
+
 if (error) console.log(error);
 </script>
 <template>
   <main class="bg-black h-screen">
     <div class="container text-gray-200">
       <h1 class="font-doppio">Videos</h1>
-      <div class="">
-        <div
-          v-for="video in videos"
-          :key="video.sys.id"
-          class="w-80 h-20 border border-gray-700 rounded-sm bg-gray-900"
-        >
-          <a :href="video.media.url">
-            <span class="font-bold text-sm">{{ video.title }}</span>
-            <div v-if="video.thumbnail">
-              <img
-                :src="video.thumbnail.url"
-                :alt="`${video.title} thumbnail`"
-              />
-            </div>
-            <div>
-              {{ new Date(video.duration).getMinutes() }}:{{
-                new Date(video.duration).getSeconds()
-              }}
-            </div>
-          </a>
-        </div>
+      <div class="container mx-auto">
+        <VideoItem v-for="video in videos" :key="video.sys.id" :video="video" />
       </div>
     </div>
   </main>
