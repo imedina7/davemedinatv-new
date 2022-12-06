@@ -3,6 +3,7 @@ import { formatDuration } from "@/utils";
 const props = defineProps({
   video: Object,
 });
+const imgQueryParams = document.body.clientWidth > 768 ? "h=200" : "h=420";
 </script>
 <template>
   <a
@@ -16,7 +17,7 @@ const props = defineProps({
     <div v-if="props.video?.thumbnail" class="z-0">
       <img
         class="transition-transform w-full duration-150 hover:scale-110"
-        :src="`${props.video?.thumbnail.url}?h=200`"
+        :src="`${props.video?.thumbnail.url}?${imgQueryParams}`"
         :alt="`${props.video?.title} thumbnail`"
       />
     </div>
