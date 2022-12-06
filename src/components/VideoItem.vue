@@ -7,12 +7,16 @@ const props = defineProps({
 <template>
   <a
     :href="props.video?.media.url"
-    class="block relative w-80 border border-gray-700 rounded-sm overflow-hidden"
+    class="table-cell relative w-fit border border-gray-700 rounded-sm overflow-hidden"
   >
-    <span class="font-bold text-sm absolute">{{ props.video?.title }}</span>
+    <span
+      class="font-bold text-sm absolute px-2 py-1 z-10 drop-shadow-md shadow-black"
+      >{{ props.video?.title }}</span
+    >
     <div v-if="props.video?.thumbnail" class="z-0">
       <img
-        :src="props.video?.thumbnail.url"
+        class="transition-transform duration-150 hover:scale-110"
+        :src="`${props.video?.thumbnail.url}?h=200`"
         :alt="`${props.video?.title} thumbnail`"
       />
     </div>

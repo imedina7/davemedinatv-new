@@ -2,7 +2,7 @@
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 </script>
 <template>
-  <div class="text-gray-600 text-3xl w-1/2" aria-label="Redes Sociales">
+  <div class="mx-6 text-gray-600 text-2xl w-1/2" aria-label="Redes Sociales">
     <ul class="flex items-center justify-between">
       <li class="hover:text-gray-300 transition-all duration-150">
         <a aria-label="Youtube" href="https://www.youtube.com/DaveMedinaTV"
