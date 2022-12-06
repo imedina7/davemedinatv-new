@@ -8,7 +8,7 @@ const imgQueryParams = document.body.clientWidth > 768 ? "h=200" : "h=420";
 <template>
   <a
     :href="props.video?.media.url"
-    class="block md:table-cell relative w-full h-fit md:w-fit border border-gray-700 rounded-sm overflow-hidden"
+    class="block flex-grow relative w-full h-fit md:w-fit border border-gray-700 rounded-sm overflow-hidden"
   >
     <span
       class="font-bold text-md md:text-sm absolute px-2 py-1 z-10 drop-shadow-md shadow-black"
