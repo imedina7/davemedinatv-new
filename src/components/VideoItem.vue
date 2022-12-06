@@ -7,15 +7,15 @@ const props = defineProps({
 <template>
   <a
     :href="props.video?.media.url"
-    class="table-cell relative w-fit border border-gray-700 rounded-sm overflow-hidden"
+    class="block md:table-cell relative w-full h-fit md:w-fit border border-gray-700 rounded-sm overflow-hidden"
   >
     <span
-      class="font-bold text-sm absolute px-2 py-1 z-10 drop-shadow-md shadow-black"
+      class="font-bold text-md md:text-sm absolute px-2 py-1 z-10 drop-shadow-md shadow-black"
       >{{ props.video?.title }}</span
     >
     <div v-if="props.video?.thumbnail" class="z-0">
       <img
-        class="transition-transform duration-150 hover:scale-110"
+        class="transition-transform w-full duration-150 hover:scale-110"
         :src="`${props.video?.thumbnail.url}?h=200`"
         :alt="`${props.video?.title} thumbnail`"
       />
