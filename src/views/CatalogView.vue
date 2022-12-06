@@ -16,7 +16,7 @@ if (error) console.log(error);
   <main class="bg-black h-screen">
     <div class="container mx-auto md:mt-4 text-gray-200 overflow-y-auto">
       <h1 class="font-doppio text-2xl py-2">Videos</h1>
-      <div class="w-full">
+      <div class="flex flex-wrap w-full">
         <VideoItem v-for="video in videos" :key="video.sys.id" :video="video" />
       </div>
     </div>
