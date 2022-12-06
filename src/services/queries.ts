@@ -2,7 +2,7 @@ import gql from "graphql-tag";
 
 export const ALL_VIDEOS_QUERY = gql`
   query ALL_VIDEOS_QUERY {
-    videoCollection {
+    videoCollection(order: youtubeUploadDate_DESC) {
       total
       items {
         sys {
@@ -12,7 +12,7 @@ export const ALL_VIDEOS_QUERY = gql`
         thumbnail {
           url
         }
-        publishedAt
+        youtubeUploadDate
         duration
         media {
           url
