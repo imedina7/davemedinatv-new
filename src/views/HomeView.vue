@@ -12,6 +12,6 @@ import DaveLogo from "../components/DaveLogo.vue";
     >
       <RouterLink to="/videos">ver videos</RouterLink>
     </div>
-    <SocialLinks />
+    <SocialLinks class="text-2xl" />
   </main>
 </template>
