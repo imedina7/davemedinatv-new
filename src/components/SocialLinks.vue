@@ -1,27 +1,17 @@
 <script setup lang="ts">
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import { socialMediaLinks } from "@/utils/constants";
 </script>
 <template>
-  <div class="mx-6 text-gray-600 text-2xl w-1/2" aria-label="Redes Sociales">
-    <ul class="flex items-center justify-between">
-      <li class="hover:text-gray-300 transition-all duration-150">
-        <a aria-label="Youtube" href="https://www.youtube.com/DaveMedinaTV"
-          ><FontAwesomeIcon :icon="['fab', 'youtube']"
-        /></a>
-      </li>
-      <li class="hover:text-gray-300 transition-all duration-150">
-        <a aria-label="Instagram" href="https://www.instagram.com/davemedina.tv"
-          ><FontAwesomeIcon :icon="['fab', 'instagram']"
-        /></a>
-      </li>
-      <li class="hover:text-gray-300 transition-all duration-150">
-        <a aria-label="Twitter" href="https://www.twitter.com/davemedinatv"
-          ><FontAwesomeIcon :icon="['fab', 'twitter']"
-        /></a>
-      </li>
-      <li class="hover:text-gray-300 transition-all duration-150">
-        <a aria-label="Twitch" href="https://www.twitch.com/davemedinatv"
-          ><FontAwesomeIcon :icon="['fab', 'twitch']"
+  <div class="px-2 md:px-6 text-gray-600 w-full" aria-label="Redes Sociales">
+    <ul class="flex items-center justify-around">
+      <li
+        v-for="link in socialMediaLinks"
+        :key="link.label"
+        class="hover:text-gray-300 transition-all duration-150"
+      >
+        <a :aria-label="link.label" :href="link.url"
+          ><FontAwesomeIcon :icon="link.icon"
         /></a>
       </li>
     </ul>
