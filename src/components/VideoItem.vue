@@ -6,9 +6,8 @@ const props = defineProps({
 const imgQueryParams = document.body.clientWidth > 768 ? "h=200" : "h=420";
 </script>
 <template>
-  <a
-    :href="props.video?.media.url"
-    class="block flex-grow relative w-full h-fit md:w-fit border border-gray-700 rounded-sm overflow-hidden"
+  <div
+    class="block flex-grow relative w-full h-fit md:w-fit border border-gray-700 rounded-sm overflow-hidden cursor-pointer"
   >
     <span
       class="font-bold text-md md:text-sm absolute px-2 py-1 z-10 drop-shadow-md shadow-black"
@@ -26,5 +25,5 @@ const imgQueryParams = document.body.clientWidth > 768 ? "h=200" : "h=420";
     >
       {{ formatDuration(props.video?.duration) }}
     </div>
-  </a>
+  </div>
 </template>
