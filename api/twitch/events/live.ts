@@ -8,7 +8,7 @@ export default function handler(
   request: VercelRequest,
   response: VercelResponse,
 ) {
-  webhookChallengeMiddleware(request, response);
+  if (webhookChallengeMiddleware(request, response)) return;
   if (!verifyRequest(request)) {
     response
       .setHeader("Content-Type", "text/plain")
