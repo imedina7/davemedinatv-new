@@ -1,4 +1,7 @@
 import { createApp, h, provide } from "vue";
+import { VueFire, VueFireAuth } from "vuefire";
+import { firebaseApp } from "@/services/firebase";
+
 import { createPinia } from "pinia";
 import "./assets/styles/main.css";
 
@@ -21,10 +24,14 @@ const app = createApp({
   render: () => h(App),
 });
 
+app.use(VueFire, {
+  firebaseApp,
+  modules: [VueFireAuth()],
+});
+
 library.add(icons);
 
 app.component("FontAwesomeIcon", FontAwesomeIcon);
-
 app.use(createPinia());
 app.use(router);
 
