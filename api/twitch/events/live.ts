@@ -1,11 +1,10 @@
 import {
-  getToken,
   verifyRequest,
   webhookChallengeMiddleware,
 } from "../../../src/services/twitch";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-export default async function handler(
+export default function handler(
   request: VercelRequest,
   response: VercelResponse,
 ) {
