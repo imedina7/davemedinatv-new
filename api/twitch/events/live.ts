@@ -18,12 +18,13 @@ export default async function handler(
       .send("Forbidden. Failed to verify request");
     return;
   }
-  const { subscription, event } = request.body;
+
+  const { subscription } = request.body;
   try {
     switch (subscription.type) {
       case "stream.online":
         await kv.set<boolean>("stream:status", true);
-        updateStreamMetadata();
+        await updateStreamMetadata();
         break;
 
       case "stream.offline":
@@ -32,7 +33,7 @@ export default async function handler(
         break;
 
       case "channel.update":
-        updateStreamMetadata();
+        await updateStreamMetadata();
         break;
       default:
         response.status(400).json({ error: "Invalid Event" });

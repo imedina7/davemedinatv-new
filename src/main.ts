@@ -13,6 +13,7 @@ import router from "./router";
 
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { apolloClient } from "./services/apolloClient";
+import { useAppStore } from "./stores/app";
 
 const app = createApp({
   setup() {
@@ -27,5 +28,9 @@ library.add(icons);
 app.component("FontAwesomeIcon", FontAwesomeIcon);
 app.use(createPinia());
 app.use(router);
+
+const store = useAppStore();
+
+store.initStore();
 
 app.mount("#app");
