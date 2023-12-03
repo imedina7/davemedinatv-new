@@ -3,7 +3,7 @@ import { useAppStore } from "@/stores/app";
 import { computed } from "vue";
 
 const store = useAppStore();
-const TWITCH_LOGIN = import.meta.env.TWITCH_LOGIN;
+const TWITCH_LOGIN = import.meta.env.VITE_TWITCH_LOGIN;
 const isLive = computed(() => store.stream.isLive);
 </script>
 
