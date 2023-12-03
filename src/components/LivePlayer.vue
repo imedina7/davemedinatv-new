@@ -8,10 +8,11 @@ const isLive = computed(() => store.stream.isLive);
 </script>
 
 <template>
-  <div v-if="isLive" class="fixed bottom-5 left-6 w-52 h-36">
+  <div v-if="isLive" class="-z-50 fixed inset-0 w-screen h-screen">
     <iframe
       title="Twitch Player"
       :src="`https://player.twitch.tv/?channel=${TWITCH_LOGIN}&parent=stage.davemedina.tv`"
+      width="100%"
       height="100%"
       parent="stage.davemedina.tv"
       allowfullscreen

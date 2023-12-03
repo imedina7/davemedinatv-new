@@ -10,7 +10,9 @@ const isLive = computed(() => store.stream.isLive);
 const streamRun = computed(() => store.streamRunTime);
 </script>
 <template>
-  <main class="bg-black h-screen flex flex-col items-center justify-center">
+  <main
+    class="bg-black/80 h-screen flex flex-col items-center justify-center backdrop-blur-sm dotted-pattern"
+  >
     <div class="w-full px-5 md:px-20 lg:px-40">
       <DaveLogo />
     </div>
