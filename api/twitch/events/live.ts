@@ -1,10 +1,12 @@
 import {
+  updateStreamMetadata,
   verifyRequest,
   webhookChallengeMiddleware,
 } from "../../../src/services/twitch";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+import { kv } from "@vercel/kv";
 
-export default function handler(
+export default async function handler(
   request: VercelRequest,
   response: VercelResponse,
 ) {
@@ -16,13 +18,30 @@ export default function handler(
       .send("Forbidden. Failed to verify request");
     return;
   }
-  const { subscription } = request.body;
+  const { subscription, event } = request.body;
+  try {
+    switch (subscription.type) {
+      case "stream.online":
+        await kv.set<boolean>("stream:status", true);
+        updateStreamMetadata();
+        break;
 
-  if (subscription.type === "stream.online") {
-    console.log(`user went online !`);
+      case "stream.offline":
+        console.log(`user went offline !`);
+        await kv.set<boolean>("stream:status", false);
+        break;
+
+      case "channel.update":
+        updateStreamMetadata();
+        break;
+      default:
+        response.status(400).json({ error: "Invalid Event" });
+        return;
+    }
+
+    response.status(200).json({ message: "ok" });
+  } catch (err) {
+    console.error(err);
+    response.status(500).json({ error: "failed to update stream status" });
   }
-  if (subscription.type === "stream.offline") {
-    console.log(`user went offline !`);
-  }
-  response.status(200).json({ test: "ok" });
 }

@@ -1,4 +1,5 @@
 import { createApp, h, provide } from "vue";
+
 import { createPinia } from "pinia";
 import "./assets/styles/main.css";
 
@@ -24,7 +25,6 @@ const app = createApp({
 library.add(icons);
 
 app.component("FontAwesomeIcon", FontAwesomeIcon);
-
 app.use(createPinia());
 app.use(router);
 

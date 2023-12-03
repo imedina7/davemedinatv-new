@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import SocialLinks from "../components/SocialLinks.vue";
 import DaveLogo from "../components/DaveLogo.vue";
+import { computed, onMounted } from "vue";
+import { useAppStore } from "@/stores/app";
+
+const store = useAppStore();
+
+const isLive = computed(() => store.stream.isLive);
+onMounted(() => {
+  store.fetchLiveState();
+});
 </script>
 <template>
   <main class="bg-black h-screen flex flex-col items-center justify-center">
@@ -12,6 +21,7 @@ import DaveLogo from "../components/DaveLogo.vue";
     >
       <RouterLink to="/videos">ver videos</RouterLink>
     </div>
+    <span class="text-slate-100">{{ isLive }}</span>
     <SocialLinks class="text-2xl" />
   </main>
 </template>
