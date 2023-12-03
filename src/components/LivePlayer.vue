@@ -3,7 +3,7 @@ import { useAppStore } from "@/stores/app";
 import { computed } from "vue";
 
 const store = useAppStore();
-const VERCEL_URL = import.meta.env.VERCEL_URL;
+const VERCEL_URL = import.meta.env.VUE_APP_VERCEL_URL;
 const TWITCH_LOGIN = import.meta.env.TWITCH_LOGIN;
 const isLive = computed(() => store.stream.isLive);
 </script>
