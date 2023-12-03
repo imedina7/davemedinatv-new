@@ -20,7 +20,6 @@ export const useAppStore = defineStore("app", {
   }),
   getters: {
     streamRunTime(state): string {
-      console.log(this.now);
       const { startedAt } = state.stream;
       return formatDuration(this.now - startedAt.getTime());
     },
@@ -46,7 +45,7 @@ export const useAppStore = defineStore("app", {
       try {
         const { isLive, stream } = (await getStream()).data;
         const startedAt = new Date(stream.started_at);
-        console.log(startedAt);
+
         this.stream = {
           isLive,
           title: stream.title,
