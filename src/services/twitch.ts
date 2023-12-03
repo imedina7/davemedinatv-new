@@ -1,24 +1,23 @@
 import * as crypto from "crypto";
+import { kv } from "@vercel/kv";
 import { createClient } from "./httpClient";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-
-enum SubscriptionMethod {
-  WEBSOCKET = "websocket",
-  WEBHOOK = "webhook",
-}
+import type { TwitchToken } from "../types/twitch";
+import { SubscriptionMethod } from "../types/twitch";
 
 const twitchAuthBaseUrl =
   process.env.TWITCH_AUTH_API_BASE_URL ?? "https://id.twitch.tv/oauth2/token";
 const twitchApiBaseUrl =
-  process.env.TWITCH_API_BASE_URL ?? "https://api.twitch.tv/helix/";
+  process.env.TWITCH_API_BASE_URL ?? "https://api.twitch.tv/helix";
 
 const clientId = process.env.TWITCH_CLIENT_ID;
 const clientSecret = process.env.TWITCH_CLIENT_SECRET;
 
 const userId = process.env.TWITCH_USER_ID;
-const redirectUri = process.env.TWITCH_REDIRECT_URI;
 
-const authClient = createClient(twitchAuthBaseUrl);
+const authClient = createClient(twitchAuthBaseUrl, {
+  "Content-Type": "application/x-www-form-urlencoded",
+});
 
 const TWITCH_MESSAGE_ID = "Twitch-Eventsub-Message-Id".toLowerCase();
 const TWITCH_MESSAGE_TIMESTAMP =
@@ -29,26 +28,74 @@ const TWITCH_MESSAGE_SIGNATURE =
 const eventSubSecret = process.env.TWITCH_EVENT_SUB_SECRET ?? "";
 const HMAC_PREFIX = "sha256=";
 
-export const getToken = () =>
-  authClient.post("", {
-    client_id: clientId,
-    client_secret: clientSecret,
-    grant_type: "client_credentials",
+const getHmac = (secret: string, message: string) =>
+  crypto.createHmac("sha256", secret).update(message).digest("hex");
+
+const getHmacMessage = (request: Record<string, any>) => {
+  if (!request.headers || !request.body) return;
+  return (
+    request.headers[TWITCH_MESSAGE_ID] +
+    request.headers[TWITCH_MESSAGE_TIMESTAMP] +
+    JSON.stringify(request.body)
+  );
+};
+
+const verifyMessage = (hmac: string, verifySignature: string) => {
+  return crypto.timingSafeEqual(
+    Buffer.from(hmac),
+    Buffer.from(verifySignature),
+  );
+};
+
+const getTokenFromTwitch = async () =>
+  (
+    await authClient.post(
+      "",
+      `client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
+    )
+  ).data;
+
+const getToken = async () => {
+  console.log("getting token");
+
+  const twitchToken = await kv.hgetall("twitch_app_token");
+
+  if (
+    twitchToken?.token &&
+    twitchToken?.expiresAt &&
+    Number(twitchToken.expiresAt) > Date.now()
+  ) {
+    return twitchToken.token;
+  }
+  console.log("Token not found or expired, requesting a new one...");
+  const response = await getTokenFromTwitch();
+
+  await kv.hset("twitch_app_token", {
+    expiresAt: Date.now() + response.expires_in * 1000,
+    token: response.access_token,
   });
 
-const client = createClient(twitchApiBaseUrl, {
-  Authorization: `Bearer ${getToken()}`,
-  "Client-Id": clientId,
-  "Content-Type": "application/json",
-});
+  return response.access_token;
+};
 
-export const subscribeToEvent = (
+const getClient = async () => {
+  console.log("getting client");
+  const token = await getToken();
+  return createClient(twitchApiBaseUrl, {
+    Authorization: `Bearer ${token}`,
+    "Client-Id": clientId,
+    "Content-Type": "application/json",
+  });
+};
+
+export const subscribeToEvent = async (
   type: string,
   method: SubscriptionMethod = SubscriptionMethod.WEBHOOK,
   sessionId?: string,
   callback?: string,
 ) => {
-  client.post("/eventsub/subscriptions", {
+  const client = await getClient();
+  return client.post("/eventsub/subscriptions", {
     type,
     version: "1",
     condition: { broadcaster_user_id: userId },
@@ -65,23 +112,17 @@ export const subscribeToEvent = (
   });
 };
 
-const getHmac = (secret: string, message: string) =>
-  crypto.createHmac("sha256", secret).update(message).digest("hex");
-
-export const getHmacMessage = (request: Record<string, any>) => {
-  if (!request.headers || !request.body) return;
-  return (
-    request.headers[TWITCH_MESSAGE_ID] +
-    request.headers[TWITCH_MESSAGE_TIMESTAMP] +
-    JSON.stringify(request.body)
-  );
+export const getStreamData = async () => {
+  const client = await getClient();
+  return (await client.get("/streams", { params: { user_id: userId } })).data;
 };
 
-export const verifyMessage = (hmac: string, verifySignature: string) => {
-  return crypto.timingSafeEqual(
-    Buffer.from(hmac),
-    Buffer.from(verifySignature),
-  );
+export const updateStreamMetadata = async () => {
+  const { data } = await getStreamData();
+
+  if (data.length) {
+    await kv.hset("stream:metadata", data[0]);
+  }
 };
 
 export const verifyRequest = (request: Record<string, any>) => {
