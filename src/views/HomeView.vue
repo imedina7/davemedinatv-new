@@ -2,7 +2,7 @@
 import SocialLinks from "../components/SocialLinks.vue";
 import DaveLogo from "../components/DaveLogo.vue";
 import LivePlayer from "../components/LivePlayer.vue";
-import { computed, ref } from "vue";
+import { computed, onBeforeMount, onBeforeUnmount, ref } from "vue";
 import { useAppStore } from "@/stores/app";
 
 const store = useAppStore();
@@ -28,17 +28,26 @@ const swipeHandler = (ev: TouchEvent | WheelEvent) => {
   if (deltaTouch.value + ev.deltaY > 0) {
     deltaTouch.value += ev.deltaY;
   }
-  if (rollUp.value) {
-    if (ev.deltaY < -25) rollUp.value = false;
-  } else if (ev.deltaY > 25) rollUp.value = true;
+  // console.log(deltaTouch.value);
+  // if (rollUp.value) {
+  //   if (deltaTouch.value < -50) rollUp.value = false;
+  // } else if (deltaTouch.value > 50) rollUp.value = true;
   console.log("wheel event triggered");
 };
+
+onBeforeMount(() => {
+  window.addEventListener("wheel", swipeHandler);
+});
+
+onBeforeUnmount(() => {
+  window.removeEventListener("wheel", swipeHandler);
+});
 </script>
 <template>
-  <main @wheel="swipeHandler">
+  <main>
     <div
       ref="drawerEl"
-      :class="`bg-black/80 flex flex-col items-center justify-center backdrop-blur-sm dotted-pattern ${
+      :class="`bg-black/80 flex fixed inset-0 flex-col items-center justify-center backdrop-blur-sm dotted-pattern ${
         rollUp ? 'h-11' : 'h-screen'
       }`"
       :style="deltaTouch === 0 ? '' : `height: calc(100vh - ${deltaTouch}px)`"

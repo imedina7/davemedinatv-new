@@ -7,7 +7,7 @@ export const useAppStore = defineStore("app", {
     stream: {
       title: "Test stream",
       startedAt: new Date(),
-      isLive: false,
+      isLive: true,
       category: "3D Modelling",
       gameName: "",
       thumbnail: "",
@@ -39,7 +39,7 @@ export const useAppStore = defineStore("app", {
       setTimeout(this.updateNow, 1000);
     },
     scheduleUpdateStreamState() {
-      setTimeout(this.fetchLiveState, 15000);
+      //setTimeout(this.fetchLiveState, 60000);
     },
     async fetchLiveState() {
       try {
