@@ -11,7 +11,7 @@ const isLive = computed(() => store.stream.isLive);
   <div v-if="isLive" class="fixed bottom-5 left-6 w-52 h-36">
     <iframe
       title="Twitch Player"
-      :src="`https://player.twitch.tv/?${TWITCH_LOGIN}&parent=stage.davemedina.tv`"
+      :src="`https://player.twitch.tv/?channel=${TWITCH_LOGIN}&parent=stage.davemedina.tv`"
       height="100%"
       parent="stage.davemedina.tv"
       allowfullscreen
