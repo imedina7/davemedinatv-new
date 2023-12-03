@@ -6,11 +6,11 @@ import {
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { kv } from "@vercel/kv";
 
-export default async function handler(
+export default function handler(
   request: VercelRequest,
   response: VercelResponse,
 ) {
-  webhookChallengeMiddleware(request, response);
+  if (webhookChallengeMiddleware(request, response)) return;
   if (!verifyRequest(request)) {
     response
       .setHeader("Content-Type", "text/plain")

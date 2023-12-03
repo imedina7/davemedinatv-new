@@ -159,6 +159,7 @@ export const webhookChallengeMiddleware = (
       .setHeader("Content-Type", "text/plain")
       .status(200)
       .send(request.body.challenge);
-    return;
+    return true;
   }
+  return false;
 };
