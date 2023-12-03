@@ -1,5 +1,4 @@
 import { createApp, h, provide } from "vue";
-import { VueFire, VueFireAuth } from "vuefire";
 
 import { createPinia } from "pinia";
 import "./assets/styles/main.css";
