@@ -47,45 +47,53 @@ const verifyMessage = (hmac: string, verifySignature: string) => {
   );
 };
 
-const getTokenFromTwitch = async () =>
-  (
+const getTokenFromTwitch = async () => {
+  console.log(
+    `client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
+  );
+  return (
     await authClient.post(
       "",
       `client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`,
     )
   ).data;
+};
 
 const getToken = async () => {
-  console.log("getting token");
+  try {
+    console.log("getting token");
+    const twitchToken = await kv.hgetall<TwitchToken>("twitch:token");
 
-  const twitchToken = await kv.hgetall("twitch_app_token");
+    if (twitchToken?.expiresAt && twitchToken.expiresAt < Date.now())
+      return twitchToken.token;
 
-  if (
-    twitchToken?.token &&
-    twitchToken?.expiresAt &&
-    Number(twitchToken.expiresAt) > Date.now()
-  ) {
-    return twitchToken.token;
+    console.log("Token not found or expired, requesting a new one...");
+    const response = await getTokenFromTwitch();
+
+    await kv.hset<TwitchToken[keyof TwitchToken]>("twitch:token", {
+      expiresAt: Date.now() + response.expires_in * 1000,
+      token: response.access_token,
+    });
+
+    return response.access_token;
+  } catch (err) {
+    console.log(err);
   }
-  console.log("Token not found or expired, requesting a new one...");
-  const response = await getTokenFromTwitch();
-
-  await kv.hset("twitch_app_token", {
-    expiresAt: Date.now() + response.expires_in * 1000,
-    token: response.access_token,
-  });
-
-  return response.access_token;
 };
 
 const getClient = async () => {
   console.log("getting client");
-  const token = await getToken();
-  return createClient(twitchApiBaseUrl, {
-    Authorization: `Bearer ${token}`,
-    "Client-Id": clientId,
-    "Content-Type": "application/json",
-  });
+  try {
+    const token = await getToken();
+    return createClient(twitchApiBaseUrl, {
+      Authorization: `Bearer ${token}`,
+      "Client-Id": clientId,
+      "Content-Type": "application/json",
+    });
+  } catch (err) {
+    console.log(err);
+    throw err;
+  }
 };
 
 export const subscribeToEvent = async (

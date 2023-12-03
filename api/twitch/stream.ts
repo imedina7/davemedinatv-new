@@ -11,7 +11,8 @@ export default async function handler(
       isLive,
       stream,
     });
-  } catch {
+  } catch (err) {
+    console.log(err);
     response.status(500).json({
       error: "Failed to get stream status",
     });
