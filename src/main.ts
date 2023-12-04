@@ -34,3 +34,8 @@ const store = useAppStore();
 store.initStore();
 
 app.mount("#app");
+
+window.addEventListener("touchstart", store.touchStart);
+window.addEventListener("touchmove", store.swipe);
+window.addEventListener("wheel", store.swipe);
+window.addEventListener("touchend", store.touchEnd);

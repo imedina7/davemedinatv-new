@@ -20,7 +20,7 @@ export const socialMediaLinks: LinkWithIcon[] = [
   {
     label: "Twitter",
     url: "https://www.twitter.com/davemedinatv",
-    icon: ["fab", "twitter"],
+    icon: ["fab", "x-twitter"],
   },
   {
     label: "Twitch",

@@ -15,6 +15,10 @@ export const useAppStore = defineStore("app", {
     },
     ui: {
       isVideoOverlayOpen: false,
+      swipeDelta: 0,
+      touchYStart: 0,
+      isSwipping: false,
+      landingRolledUp: false,
     },
     now: Date.now(),
   }),
@@ -61,6 +65,44 @@ export const useAppStore = defineStore("app", {
         this.updateNow();
         this.scheduleUpdateStreamState();
       }
+    },
+    swipe(event: WheelEvent | TouchEvent) {
+      if (event instanceof TouchEvent) {
+        this.ui.swipeDelta = this.ui.touchYStart - event.touches[0].pageY;
+        return;
+      }
+      this.ui.isSwipping = false;
+
+      if (this.ui.swipeDelta + event.deltaY > 0) {
+        this.ui.swipeDelta += event.deltaY;
+      }
+      if (!event.view?.innerHeight) return;
+
+      if (this.ui.landingRolledUp) {
+        if (this.ui.swipeDelta < event.view.innerHeight) {
+          this.ui.landingRolledUp = false;
+        }
+      } else {
+        if (this.ui.swipeDelta > 50) {
+          this.ui.landingRolledUp = true;
+        }
+      }
+    },
+    touchStart(ev: TouchEvent) {
+      this.ui.touchYStart = ev.touches[0].pageY;
+      this.ui.isSwipping = true;
+    },
+    touchEnd(ev: TouchEvent) {
+      const touchEnd = ev.changedTouches[0].pageY;
+      this.ui.swipeDelta = this.ui.touchYStart - touchEnd;
+
+      if (this.ui.landingRolledUp) {
+        if (this.ui.swipeDelta < -100) this.ui.landingRolledUp = false;
+      } else {
+        if (this.ui.swipeDelta > 100) this.ui.landingRolledUp = true;
+      }
+      this.ui.touchYStart = 0;
+      this.ui.isSwipping = false;
     },
   },
 });
