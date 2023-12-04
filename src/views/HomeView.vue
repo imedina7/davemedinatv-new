@@ -16,12 +16,14 @@ const ui = computed(() => store.ui);
 <template>
   <main>
     <div
-      :class="`bg-black/80 flex fixed overflow-hidden inset-0 flex-col transition-all duration-200 ease-in-out items-center justify-center backdrop-blur-sm dotted-pattern ${
+      :class="`border-b border-b-neutral-900/60 shadow-lg shadow-neutral-900/20 bg-black/80 flex fixed overflow-hidden inset-0 flex-col transition-all duration-200 ease-in-out items-center justify-center backdrop-blur-sm dotted-pattern ${
         ui.landingRolledUp ? 'h-11' : 'h-screen'
       }`"
       :style="
         ui.isSwipping
-          ? `transition: none; height: calc(100vh - ${ui.swipeDelta}px)`
+          ? `transition: none; height: calc(${
+              ui.landingRolledUp ? '44px' : '100vh'
+            } - ${ui.swipeDelta}px)`
           : ''
       "
     >
