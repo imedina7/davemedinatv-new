@@ -22,6 +22,7 @@ export const useAppStore = defineStore("app", {
     },
     now: Date.now(),
   }),
+
   getters: {
     streamRunTime(state): string {
       const { startedAt } = state.stream;
@@ -71,20 +72,25 @@ export const useAppStore = defineStore("app", {
         this.ui.swipeDelta = this.ui.touchYStart - event.touches[0].pageY;
         return;
       }
-      this.ui.isSwipping = false;
 
-      if (this.ui.swipeDelta + event.deltaY > 0) {
-        this.ui.swipeDelta += event.deltaY;
-      }
       if (!event.view?.innerHeight) return;
 
+      if (
+        this.ui.swipeDelta + event.deltaY > 0 &&
+        this.ui.swipeDelta + event.deltaY < event.view.innerHeight - 50
+      ) {
+        this.ui.swipeDelta += event.deltaY;
+      }
+
       if (this.ui.landingRolledUp) {
-        if (this.ui.swipeDelta < event.view.innerHeight) {
+        if (this.ui.swipeDelta < event.view.innerHeight / 3) {
           this.ui.landingRolledUp = false;
+          this.ui.isSwipping = false;
         }
       } else {
-        if (this.ui.swipeDelta > 50) {
+        if (this.ui.swipeDelta > event.view.innerHeight / 3) {
           this.ui.landingRolledUp = true;
+          this.ui.isSwipping = false;
         }
       }
     },

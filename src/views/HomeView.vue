@@ -29,16 +29,29 @@ const ui = computed(() => store.ui);
         <DaveLogo />
       </div>
       <div
-        class="text-slate-400 hover:text-slate-200 text-lg mb-5 font-thin uppercase font-rajdhani"
+        class="flex flex-col w-48 items-center text-slate-400 text-lg mb-5 font-thin uppercase font-rajdhani"
       >
-        <RouterLink to="/videos" class="flex gap-3 items-center"
+        <div
+          v-if="isLive && !store.ui.landingRolledUp"
+          @click="
+            () => {
+              store.ui.landingRolledUp = true;
+            }
+          "
+          class="flex gap-3 items-center text-center hover:text-slate-200 cursor-pointer"
+        >
+          <FontAwesomeIcon fade :icon="['fa', 'angles-up']" size="sm" />
+          en vivo {{ streamRun }}
+          <FontAwesomeIcon fade :icon="['fa', 'angles-up']" size="sm" />
+        </div>
+        <RouterLink
+          to="/videos"
+          class="flex gap-3 items-center text-center hover:text-slate-200"
           ><FontAwesomeIcon fade :icon="['fa', 'angles-down']" size="sm" />
           ver videos
           <FontAwesomeIcon fade :icon="['fa', 'angles-down']" size="sm"
         /></RouterLink>
       </div>
-      <span class="text-slate-100">{{ isLive }}</span>
-      <span class="text-slate-100">{{ streamRun }}</span>
       <SocialLinks class="text-2xl" />
     </div>
     <LivePlayer />
