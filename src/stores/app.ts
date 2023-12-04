@@ -43,7 +43,7 @@ export const useAppStore = defineStore("app", {
       setTimeout(this.updateNow, 1000);
     },
     scheduleUpdateStreamState() {
-      //setTimeout(this.fetchLiveState, 60000);
+      setTimeout(this.fetchLiveState, 60000);
     },
     async fetchLiveState() {
       try {
