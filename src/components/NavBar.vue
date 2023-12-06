@@ -1,26 +1,71 @@
 <script setup lang="ts">
-import DaveLogo from "./DaveLogo.vue";
+import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+import DaveLogo from "../components/DaveLogo.vue";
 import SocialLinks from "./SocialLinks.vue";
 
 defineProps({
   navigation: Object,
 });
+import { computed } from "vue";
+import { useAppStore } from "@/stores/app";
+import classnames from "classnames";
+
+const store = useAppStore();
+
+const isLive = computed(() => store.stream.isLive);
+const streamRun = computed(() => store.streamRunTime);
+
+const ui = computed(() => store.ui);
 </script>
 <template>
   <nav
-    class="bg-gray-900 h-11 text-md md:text-lg md:h-16 flex flex-row justify-between gap-2 items-center"
+    :class="
+      classnames(
+        'border-b gap-5 border-b-neutral-900/60 shadow-lg shadow-neutral-900/20',
+        'bg-black/80 flex fixed inset-0 transition-all duration-200',
+        'ease-in-out items-center justify-center backdrop-blur-sm dotted-pattern',
+        ui.landingRolledUp && !ui.isSwipping ? 'h-14' : 'h-screen flex-col',
+        { 'overflow-hidden': ui.isSwipping },
+      )
+    "
+    :style="
+      ui.isSwipping
+        ? `transition: none; height: calc(${
+            ui.landingRolledUp ? '56px' : '100vh'
+          } - ${ui.swipeDelta}px)`
+        : ''
+    "
   >
-    <div class="h-14 md:h-20 py-2 px-4 relative top-1">
+    <div
+      :class="`transition-all shrink px-5 md:px-20 lg:px-40 ${
+        ui.landingRolledUp && !ui.isSwipping
+          ? 'h-full scale-125 translate-y-2'
+          : 'w-full'
+      }`"
+      @touchstart="(e) => ui.landingRolledUp && e.stopPropagation()"
+    >
       <RouterLink to="/">
         <DaveLogo />
       </RouterLink>
     </div>
-    <div class="text-slate-400 font-thin uppercase font-rajdhani">
-      <RouterLink class="px-2" to="/videos">videos</RouterLink>
+    <div
+      class="flex flex-col w-48 items-center text-slate-400 text-lg font-thin uppercase font-rajdhani"
+    >
+      <div
+        v-if="isLive && !store.ui.landingRolledUp"
+        @click="() => (store.ui.landingRolledUp = true)"
+        class="flex gap-3 items-center text-center hover:text-slate-200 cursor-pointer"
+      >
+        <FontAwesomeIcon fade :icon="['fa', 'angles-up']" size="sm" />
+        en vivo {{ streamRun }}
+        <FontAwesomeIcon fade :icon="['fa', 'angles-up']" size="sm" />
+      </div>
+      <RouterLink
+        to="/videos"
+        class="flex gap-3 items-center text-center hover:text-slate-200"
+        >ver videos</RouterLink
+      >
     </div>
-    <div class="w-1/2">
-      <SocialLinks />
-    </div>
+    <SocialLinks class="text-2xl" />
   </nav>
 </template>
-<style></style>

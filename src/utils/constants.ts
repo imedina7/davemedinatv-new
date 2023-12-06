@@ -4,6 +4,7 @@ export type LinkWithIcon = {
   label: string;
   url: string;
   icon: string | object | string[] | IconDefinition;
+  class?: string;
 };
 
 export const socialMediaLinks: LinkWithIcon[] = [
@@ -16,11 +17,6 @@ export const socialMediaLinks: LinkWithIcon[] = [
     label: "Instagram",
     url: "https://www.instagram.com/davemedina.tv",
     icon: ["fab", "instagram"],
-  },
-  {
-    label: "Twitter",
-    url: "https://www.twitter.com/davemedinatv",
-    icon: ["fab", "x-twitter"],
   },
   {
     label: "Twitch",

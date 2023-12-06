@@ -69,7 +69,9 @@ export const useAppStore = defineStore("app", {
     },
     swipe(event: WheelEvent | TouchEvent) {
       if (event instanceof TouchEvent) {
-        this.ui.swipeDelta = this.ui.touchYStart - event.touches[0].pageY;
+        const delta = this.ui.touchYStart - event.touches[0].pageY;
+        if (this.ui.landingRolledUp) this.ui.swipeDelta = delta < 0 ? delta : 0;
+        else this.ui.swipeDelta = delta > 0 ? delta : 0;
         console.log(this.ui.swipeDelta);
         return;
       }
@@ -96,6 +98,7 @@ export const useAppStore = defineStore("app", {
       }
     },
     touchStart(ev: TouchEvent) {
+      this.ui.swipeDelta = 0;
       this.ui.touchYStart = ev.touches[0].pageY;
       this.ui.isSwipping = true;
     },
