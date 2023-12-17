@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import classnames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { socialMediaLinks } from "@/utils/constants";
 </script>

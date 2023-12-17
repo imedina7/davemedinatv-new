@@ -26,16 +26,22 @@ const app = createApp({
 library.add(icons);
 
 app.component("FontAwesomeIcon", FontAwesomeIcon);
+
 app.use(createPinia());
+
+router.beforeEach((to) => {
+  // if (to.name !== "home") store.$patch({ ui: { landingRolledUp: true } });
+  return true;
+});
+
 app.use(router);
 
 const store = useAppStore();
-
 store.initStore();
 
 app.mount("#app");
 
-window.addEventListener("touchstart", store.touchStart);
-window.addEventListener("touchmove", store.swipe);
-window.addEventListener("wheel", store.swipe);
+window.addEventListener("touchstart", store.touchStart, { passive: true });
+window.addEventListener("touchmove", store.swipeTouch);
+window.addEventListener("wheel", store.swipeWheel);
 window.addEventListener("touchend", store.touchEnd);

@@ -5,11 +5,10 @@ import classnames from "classnames";
 
 const store = useAppStore();
 const TWITCH_LOGIN = import.meta.env.VITE_TWITCH_LOGIN;
-const isLive = computed(() => store.stream.isLive);
 </script>
 
 <template>
-  <div :class="classnames('-z-50 inset-0 w-screen h-screen')" v-if="isLive">
+  <div :class="classnames('-z-50 inset-0 w-screen h-screen')">
     <iframe
       title="Twitch Player"
       :src="`https://player.twitch.tv/?channel=${TWITCH_LOGIN}&parent=stage.davemedina.tv`"

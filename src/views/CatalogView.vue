@@ -9,7 +9,16 @@ import VideoPlayer from "@/components/VideoPlayer.vue";
 import type { Video } from "@/types";
 
 const { result, loading, error } = useQuery(ALL_VIDEOS_QUERY);
-const videos = computed(() => result.value?.videoCollection.items ?? []);
+const videos = computed(
+  () =>
+    result.value?.videoCollection.items.map((video: any) => ({
+      id: video.id,
+      url: video.media.url,
+      title: video.title,
+      duration: video.duration,
+      thumbnailUrl: video.thumbnail.url,
+    })) ?? [],
+);
 
 const displayModal = ref(false);
 const selectedVideo = ref<Video | null>(null);
@@ -35,14 +44,7 @@ function closeModal() {
           v-for="video in videos"
           :key="video.sys.id"
           :video="video"
-          @click="
-            openModal({
-              url: video.media.url,
-              title: video.title,
-              duration: video.duration,
-              thumbnailUrl: video.thumbnail.url,
-            })
-          "
+          @click="openModal(video)"
         />
       </div>
     </div>

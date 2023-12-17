@@ -21,8 +21,8 @@ const ui = computed(() => store.ui);
   <nav
     :class="
       classnames(
-        'border-b gap-5 border-b-neutral-900/60 shadow-lg shadow-neutral-900/20',
-        'bg-black/80 flex fixed inset-0 transition-all duration-200',
+        'border-b gap-5 border-b-neutral-900/60 shadow-lg',
+        'bg-black/60 flex fixed inset-0 transition-all duration-200 z-30',
         'ease-in-out items-center justify-center backdrop-blur-sm dotted-pattern',
         ui.landingRolledUp && !ui.isSwipping ? 'h-14' : 'h-screen flex-col',
         { 'overflow-hidden': ui.isSwipping },
@@ -42,7 +42,7 @@ const ui = computed(() => store.ui);
           ? 'h-full scale-125 translate-y-2'
           : 'w-full'
       }`"
-      @touchstart="(e) => ui.landingRolledUp && e.stopPropagation()"
+      @touchstart.passive="(e) => ui.landingRolledUp && e.stopPropagation()"
     >
       <RouterLink to="/">
         <DaveLogo />
@@ -63,7 +63,7 @@ const ui = computed(() => store.ui);
       <RouterLink
         to="/videos"
         class="flex gap-3 items-center text-center hover:text-slate-200"
-        >ver videos</RouterLink
+        >videos</RouterLink
       >
     </div>
     <SocialLinks class="text-2xl" />

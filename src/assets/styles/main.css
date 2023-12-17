@@ -5,3 +5,11 @@
 .dotted-pattern {
   background-image: url('/images/tile.png');
 }
+
+.noisy-bg {
+  background-image: url('/images/noisy_bg.png');
+}
+
+.skeleton-element {
+  @apply bg-slate-600/50 rounded-sm overflow-hidden animate-pulse
+}
