@@ -2,7 +2,7 @@ import { getStream } from "@/services/api";
 import { formatDuration } from "@/utils/helpers/video";
 import { defineStore } from "pinia";
 
-export const useAppStore = defineStore("app", {
+export const useRootStore = defineStore("root", {
   state: () => ({
     stream: {
       title: "Test stream",
@@ -65,3 +65,6 @@ export const useAppStore = defineStore("app", {
     },
   },
 });
+
+export * from "./ui";
+export * from "./videos";

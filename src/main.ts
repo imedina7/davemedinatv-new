@@ -13,8 +13,7 @@ import router from "./router";
 
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { apolloClient } from "./services/apolloClient";
-import { useAppStore } from "./stores/app";
-import { useUiStore } from "./stores/ui";
+import { useRootStore, useUiStore } from "./store";
 
 const app = createApp({
   setup() {
@@ -38,8 +37,8 @@ router.beforeEach((to) => {
 app.use(router);
 
 const uiStore = useUiStore();
-const globalStore = useAppStore();
-globalStore.initStore();
+const rootStore = useRootStore();
+rootStore.initStore();
 
 app.mount("#app");
 

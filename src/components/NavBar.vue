@@ -7,11 +7,10 @@ defineProps({
   navigation: Object,
 });
 import { computed } from "vue";
-import { useUiStore } from "@/stores/ui";
-import { useAppStore } from "@/stores/app";
+import { useRootStore, useUiStore } from "@/store";
 import classnames from "classnames";
 
-const app = useAppStore();
+const app = useRootStore();
 const ui = useUiStore();
 
 const isLive = computed(() => app.stream.isLive);

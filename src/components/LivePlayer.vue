@@ -1,9 +1,6 @@
 <script setup lang="ts">
-import { useAppStore } from "@/stores/app";
-import { computed } from "vue";
 import classnames from "classnames";
 
-const store = useAppStore();
 const TWITCH_LOGIN = import.meta.env.VITE_TWITCH_LOGIN;
 </script>
 
