@@ -1,5 +1,11 @@
+<script setup lang="ts">
+const { className } = defineProps({
+  className: { type: String },
+});
+</script>
 <template>
   <svg
+    :class="className"
     height="100%"
     version="1.1"
     viewBox="0 0 3297 1543"

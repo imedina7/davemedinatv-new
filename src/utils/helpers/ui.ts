@@ -15,8 +15,7 @@ export function findDeltaSwipe({
 }
 
 export function isSwippingHorizontally(deltaX: number, deltaY: number) {
-  return (
-    Math.abs(deltaX) > SWIPE_MIN_THRESHOLD &&
-    Math.abs(deltaX) > Math.abs(deltaY)
-  );
+  const dX = Math.abs(Math.round(deltaX));
+  const dY = Math.abs(Math.round(deltaY));
+  return dY < SWIPE_MIN_THRESHOLD || dX > dY;
 }

@@ -1,52 +1,60 @@
 <script setup lang="ts">
+import { computed } from "vue";
+import classnames from "classnames";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
+
+import { useRootStore, useUiStore } from "@/store";
+import { cssCalc } from "@/utils/helpers/string";
 import DaveLogo from "../components/DaveLogo.vue";
 import SocialLinks from "./SocialLinks.vue";
 
 defineProps({
   navigation: Object,
 });
-import { computed } from "vue";
-import { useRootStore, useUiStore } from "@/store";
-import classnames from "classnames";
 
 const app = useRootStore();
 const ui = useUiStore();
 
 const isLive = computed(() => app.stream.isLive);
 const streamRun = computed(() => app.streamRunTime);
+
+const navClass = computed(() =>
+  classnames(
+    "border-b gap-5 border-b-neutral-900/60 shadow-lg",
+    "bg-black/60 flex fixed inset-0 transition-all duration-200 z-30",
+    "ease-in-out items-center justify-center backdrop-blur-sm dotted-pattern",
+    ui.landingRolledUp && !ui.touch.isSwippingY ? "h-14" : "h-screen flex-col",
+    { "overflow-hidden": ui.touch.isSwippingY },
+  ),
+);
+
+const logoWrapperClass = computed(() =>
+  classnames("transition-all shrink px-5 md:px-20 lg:px-40", {
+    "h-full scale-125 translate-y-2":
+      ui.landingRolledUp && !ui.touch.isSwippingY,
+    "w-full": !ui.landingRolledUp || ui.touch.isSwippingY,
+  }),
+);
+
+const getNavStyle = () => {
+  if (!ui.touch.isSwippingY) return "";
+
+  return {
+    transition: "none", // avoid delay when swipping
+    height: cssCalc(
+      `${ui.landingRolledUp ? "56px" : "100vh"} - ${ui.touch.swipeDeltaY}px`,
+    ),
+  };
+};
 </script>
 <template>
-  <nav
-    :class="
-      classnames(
-        'border-b gap-5 border-b-neutral-900/60 shadow-lg',
-        'bg-black/60 flex fixed inset-0 transition-all duration-200 z-30',
-        'ease-in-out items-center justify-center backdrop-blur-sm dotted-pattern',
-        ui.landingRolledUp && !ui.touch.isSwippingY
-          ? 'h-14'
-          : 'h-screen flex-col',
-        { 'overflow-hidden': ui.touch.isSwippingY },
-      )
-    "
-    :style="
-      ui.touch.isSwippingY
-        ? `transition: none; height: calc(${
-            ui.landingRolledUp ? '56px' : '100vh'
-          } - ${ui.touch.swipeDeltaY}px)`
-        : ''
-    "
-  >
+  <nav :class="navClass" :style="getNavStyle()">
     <div
-      :class="`transition-all shrink px-5 md:px-20 lg:px-40 ${
-        ui.landingRolledUp && !ui.touch.isSwippingY
-          ? 'h-full scale-125 translate-y-2'
-          : 'w-full'
-      }`"
+      :class="logoWrapperClass"
       @touchstart.passive="(e) => ui.landingRolledUp && e.stopPropagation()"
     >
       <RouterLink to="/">
-        <DaveLogo />
+        <DaveLogo className="drop-shadow-md" />
       </RouterLink>
     </div>
     <div

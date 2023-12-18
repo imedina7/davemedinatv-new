@@ -1,5 +1,5 @@
 import { SWIPE_ACTION_THRESHOLD } from "@/utils/constants";
-import { findDeltaSwipe, isSwippingHorizontally } from "@/utils/helpers/ui";
+import { findDeltaSwipe, isSwippingHorizontally } from "@/utils/helpers";
 import { defineStore } from "pinia";
 
 export const useUiStore = defineStore("ui", {
@@ -27,12 +27,11 @@ export const useUiStore = defineStore("ui", {
           event,
         });
 
-        if (isSwippingHorizontally(deltaX, deltaY)) {
-          this.touch.isSwippingX = true;
-          return;
+        if (!this.touch.isSwippingX && !this.touch.isSwippingY) {
+          this.touch.isSwippingX = isSwippingHorizontally(deltaX, deltaY);
+          this.touch.isSwippingY = !isSwippingHorizontally(deltaX, deltaY);
+          if (this.touch.isSwippingX) return;
         }
-
-        this.touch.isSwippingY = true;
 
         if (this.landingRolledUp) {
           this.touch.swipeDeltaY = Math.min(deltaY, 0);
@@ -85,21 +84,22 @@ export const useUiStore = defineStore("ui", {
       this.touch.touchXStart = 0;
       this.touch.touchYStart = 0;
 
-      this.touch.isSwippingX = false;
-      this.touch.isSwippingY = false;
-
       if (
-        this.landingRolledUp &&
-        this.touch.swipeDeltaY < -SWIPE_ACTION_THRESHOLD
+        (this.landingRolledUp || this.touch.isSwippingY) &&
+        this.touch.swipeDeltaY < SWIPE_ACTION_THRESHOLD * -1
       ) {
-        this.landingRolledUp = false;
+        this.$reset();
         return;
       }
+
       if (
-        !this.landingRolledUp &&
+        (!this.landingRolledUp || this.touch.isSwippingY) &&
         this.touch.swipeDeltaY > SWIPE_ACTION_THRESHOLD
-      )
+      ) {
         this.landingRolledUp = true;
+        this.touch.isSwippingX = false;
+        this.touch.isSwippingY = false;
+      }
     },
   },
 });
