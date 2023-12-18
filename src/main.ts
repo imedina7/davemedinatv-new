@@ -13,7 +13,7 @@ import router from "./router";
 
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { apolloClient } from "./services/apolloClient";
-import { useAppStore } from "./stores/app";
+import { useRootStore, useUiStore } from "./store";
 
 const app = createApp({
   setup() {
@@ -30,18 +30,19 @@ app.component("FontAwesomeIcon", FontAwesomeIcon);
 app.use(createPinia());
 
 router.beforeEach((to) => {
-  // if (to.name !== "home") store.$patch({ ui: { landingRolledUp: true } });
+  if (to.name !== "home") uiStore.$patch({ landingRolledUp: true });
   return true;
 });
 
 app.use(router);
 
-const store = useAppStore();
-store.initStore();
+const uiStore = useUiStore();
+const rootStore = useRootStore();
+rootStore.initStore();
 
 app.mount("#app");
 
-window.addEventListener("touchstart", store.touchStart, { passive: true });
-window.addEventListener("touchmove", store.swipeTouch);
-window.addEventListener("wheel", store.swipeWheel);
-window.addEventListener("touchend", store.touchEnd);
+window.addEventListener("touchstart", uiStore.touchStart, { passive: true });
+window.addEventListener("touchmove", uiStore.swipeTouch);
+window.addEventListener("wheel", uiStore.swipeWheel);
+window.addEventListener("touchend", uiStore.touchEnd);

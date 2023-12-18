@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 
-export const useAppStore = defineStore("app", {
+export const useVideos = defineStore("videos", {
   state: () => ({
     latest: [],
     mostWatched: [],

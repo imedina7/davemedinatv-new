@@ -3,9 +3,9 @@ import SectionContainer from "@/components/SectionContainer.vue";
 import LivePlayer from "../components/LivePlayer.vue";
 import VideoDock from "../components/VideoDock.vue";
 import { computed } from "vue";
-import { useAppStore } from "@/stores/app";
+import { useRootStore } from "@/store";
 
-const store = useAppStore();
+const store = useRootStore();
 const isLive = computed(() => store.stream.isLive);
 </script>
 <template>

@@ -24,3 +24,6 @@ export const socialMediaLinks: LinkWithIcon[] = [
     icon: ["fab", "twitch"],
   },
 ];
+
+export const SWIPE_MIN_THRESHOLD = 5;
+export const SWIPE_ACTION_THRESHOLD = 30;
