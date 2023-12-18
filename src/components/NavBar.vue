@@ -7,15 +7,15 @@ defineProps({
   navigation: Object,
 });
 import { computed } from "vue";
+import { useUiStore } from "@/stores/ui";
 import { useAppStore } from "@/stores/app";
 import classnames from "classnames";
 
-const store = useAppStore();
+const app = useAppStore();
+const ui = useUiStore();
 
-const isLive = computed(() => store.stream.isLive);
-const streamRun = computed(() => store.streamRunTime);
-
-const ui = computed(() => store.ui);
+const isLive = computed(() => app.stream.isLive);
+const streamRun = computed(() => app.streamRunTime);
 </script>
 <template>
   <nav
@@ -24,21 +24,23 @@ const ui = computed(() => store.ui);
         'border-b gap-5 border-b-neutral-900/60 shadow-lg',
         'bg-black/60 flex fixed inset-0 transition-all duration-200 z-30',
         'ease-in-out items-center justify-center backdrop-blur-sm dotted-pattern',
-        ui.landingRolledUp && !ui.isSwipping ? 'h-14' : 'h-screen flex-col',
-        { 'overflow-hidden': ui.isSwipping },
+        ui.landingRolledUp && !ui.touch.isSwippingY
+          ? 'h-14'
+          : 'h-screen flex-col',
+        { 'overflow-hidden': ui.touch.isSwippingY },
       )
     "
     :style="
-      ui.isSwipping
+      ui.touch.isSwippingY
         ? `transition: none; height: calc(${
             ui.landingRolledUp ? '56px' : '100vh'
-          } - ${ui.swipeDelta}px)`
+          } - ${ui.touch.swipeDeltaY}px)`
         : ''
     "
   >
     <div
       :class="`transition-all shrink px-5 md:px-20 lg:px-40 ${
-        ui.landingRolledUp && !ui.isSwipping
+        ui.landingRolledUp && !ui.touch.isSwippingY
           ? 'h-full scale-125 translate-y-2'
           : 'w-full'
       }`"
@@ -52,8 +54,8 @@ const ui = computed(() => store.ui);
       class="flex flex-col w-48 items-center text-slate-400 text-lg font-thin uppercase font-rajdhani"
     >
       <div
-        v-if="isLive && !store.ui.landingRolledUp"
-        @click="() => (store.ui.landingRolledUp = true)"
+        v-if="isLive && !ui.landingRolledUp"
+        @click="() => (ui.landingRolledUp = true)"
         class="flex gap-3 items-center text-center hover:text-slate-200 cursor-pointer"
       >
         <FontAwesomeIcon fade :icon="['fa', 'angles-up']" size="sm" />

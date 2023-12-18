@@ -13,13 +13,6 @@ export const useAppStore = defineStore("app", {
       thumbnail: "",
       tags: ["uruguay"],
     },
-    ui: {
-      isVideoOverlayOpen: false,
-      swipeDelta: 0,
-      touchYStart: 0,
-      isSwipping: false,
-      landingRolledUp: false,
-    },
     now: Date.now(),
   }),
 
@@ -69,64 +62,6 @@ export const useAppStore = defineStore("app", {
         this.updateNow();
         this.scheduleUpdateStreamState();
       }
-    },
-
-    swipeTouch(event: TouchEvent) {
-      console.log(event);
-      if (window.TouchEvent) return;
-      const delta = this.ui.touchYStart - event.touches[0].pageY;
-      if (this.ui.landingRolledUp) {
-        this.ui.swipeDelta = Math.min(delta, 0);
-        return;
-      }
-      this.ui.swipeDelta = Math.max(delta, 0);
-    },
-
-    swipeWheel(event: WheelEvent) {
-      const { innerHeight } = event.view ?? {};
-
-      if (!innerHeight) return;
-
-      if (
-        this.ui.swipeDelta + event.deltaY > 0 &&
-        this.ui.swipeDelta + event.deltaY < innerHeight - 50
-      ) {
-        this.ui.swipeDelta += event.deltaY;
-      }
-
-      if (this.ui.landingRolledUp) {
-        if (this.ui.swipeDelta < innerHeight / 3) {
-          this.ui.landingRolledUp = false;
-          this.ui.isSwipping = false;
-        }
-        return;
-      }
-
-      if (this.ui.swipeDelta > innerHeight / 3) {
-        this.ui.landingRolledUp = true;
-        this.ui.isSwipping = false;
-      }
-    },
-
-    touchStart(ev: TouchEvent) {
-      this.ui.swipeDelta = 0;
-      this.ui.touchYStart = ev.touches[0].pageY;
-      this.ui.isSwipping = true;
-    },
-
-    touchEnd(ev: TouchEvent) {
-      this.ui.isSwipping = false;
-      const touchEnd = ev.changedTouches[0].pageY;
-
-      this.ui.swipeDelta = this.ui.touchYStart - touchEnd;
-      this.ui.touchYStart = 0;
-
-      if (this.ui.landingRolledUp && this.ui.swipeDelta < -150) {
-        this.ui.landingRolledUp = false;
-        return;
-      }
-      if (!this.ui.landingRolledUp && this.ui.swipeDelta > 150)
-        this.ui.landingRolledUp = true;
     },
   },
 });
