@@ -1,4 +1,4 @@
-export function formatDuration(ms: number): string {
+export function formatDuration(ms: number = 0): string {
   const date = new Date(ms);
   const hours = date.getHours() - 21;
   const minutes = String(date.getMinutes()).padStart(2, "0");
