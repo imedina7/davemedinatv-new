@@ -14,6 +14,7 @@ import router from "./router";
 import { DefaultApolloClient } from "@vue/apollo-composable";
 import { apolloClient } from "./services/apolloClient";
 import { useRootStore, useUiStore } from "./store";
+import focus from "./directives/focus";
 
 const app = createApp({
   setup() {
@@ -41,6 +42,7 @@ const rootStore = useRootStore();
 rootStore.initStore();
 
 app.mount("#app");
+app.directive("focus", focus);
 
 window.addEventListener("touchstart", uiStore.touchStart, { passive: true });
 window.addEventListener("touchmove", uiStore.swipeTouch);
