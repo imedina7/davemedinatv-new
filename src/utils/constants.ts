@@ -25,5 +25,5 @@ export const socialMediaLinks: LinkWithIcon[] = [
   },
 ];
 
-export const SWIPE_MIN_THRESHOLD = 5;
-export const SWIPE_ACTION_THRESHOLD = 30;
+export const SWIPE_MIN_THRESHOLD = 12;
+export const SWIPE_ACTION_THRESHOLD = 23;
