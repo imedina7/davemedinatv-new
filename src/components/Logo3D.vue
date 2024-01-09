@@ -76,7 +76,6 @@ async function loadScene() {
 }
 
 renderer.domElement.removeAttribute("style");
-renderer.domElement.setAttribute("class", "-z-20");
 
 onMounted(() => {
   if (container.value && renderer && scene) {
@@ -89,5 +88,5 @@ onMounted(() => {
 });
 </script>
 <template>
-  <div class="absolute inset-0 flex" ref="container"></div>
+  <div class="absolute inset-0 flex -z-20" ref="container"></div>
 </template>
