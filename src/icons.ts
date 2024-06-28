@@ -11,4 +11,6 @@ export {
   faAnglesUp,
   faAnglesDown,
   faClose,
+  faClapperboard,
+  faPlay,
 } from "@fortawesome/free-solid-svg-icons";

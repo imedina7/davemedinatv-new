@@ -24,7 +24,7 @@ const videos = computed(
 );
 </script>
 <template>
-  <main>
+  <main class="absolute inset-x-0 bottom-0">
     <LivePlayer v-if="isLive" />
     <SectionContainer v-else>
       <VideoDock title="Ultimos videos" :isLoading="loading" :videos="videos" />

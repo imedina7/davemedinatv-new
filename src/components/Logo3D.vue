@@ -7,15 +7,23 @@ import {
   AmbientLight,
   MeshPhysicalMaterial,
   Vector2,
+  Raycaster,
 } from "three";
 import { getCubeMapByName } from "@/utils/helpers/three";
-import { useMouseDirection, usePerspective } from "@/hooks";
+import { MouseEventType, useMouseDirection, usePerspective } from "@/hooks";
 
 const envMap = getCubeMapByName("Lycksele2");
 
 const mouseDirection = useMouseDirection();
-
-envMap.transformUv(new Vector2(0.5, 0.5));
+const mouseClick = useMouseDirection(MouseEventType.CLICK, () => {
+  const intersects = raycaster.intersectObjects(scene.children);
+  intersects.forEach((intersect) => {
+    if (intersect.object.isObject3D) {
+      const mesh = intersect.object as Mesh;
+      console.log("mesh clicked", mesh);
+    }
+  });
+});
 
 const container = ref<HTMLDivElement>();
 
@@ -29,17 +37,19 @@ const { scene, camera, renderer } = usePerspective(
   { antialias: true },
 );
 
+const raycaster = new Raycaster();
+
 const daveLogo = ref<Object3D>();
 
-renderer.setSize(window.innerWidth * 0.75, window.innerHeight * 0.75);
+renderer.setSize(window.innerWidth, window.innerHeight);
 
 function render() {
   requestAnimationFrame(render);
-
-  const [mouseX, mouseY] = mouseDirection.value;
+  const { x, y } = mouseDirection.value;
+  raycaster.setFromCamera(mouseClick.value, camera);
   if (daveLogo.value) {
-    daveLogo.value.rotation.x = mouseY * 0.5;
-    daveLogo.value.rotation.y = mouseX * 0.5;
+    daveLogo.value.rotation.x = y * 0.5;
+    daveLogo.value.rotation.y = x * 0.5;
   }
   renderer.render(scene, camera);
 }
@@ -75,12 +85,13 @@ async function loadScene() {
   scene.add(ambientLight);
 }
 
-renderer.domElement.removeAttribute("style");
+// renderer.domElement.removeAttribute("style");
 
 onMounted(() => {
   if (container.value && renderer && scene) {
     container.value.appendChild(renderer.domElement);
     renderer.setClearAlpha(0.0);
+    console.log(renderer.capabilities);
 
     loadScene();
     render();
