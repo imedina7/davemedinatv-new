@@ -30,15 +30,18 @@ jobs:
 
     - name: Install dependencies
       run: |
-        source ~/.bashrc
+        export BUN_INSTALL="$HOME/.bun"
+        export PATH="$BUN_INSTALL/bin:$PATH"
         bun install
 
     - name: Run tests
       run: |
-        source ~/.bashrc
+        export BUN_INSTALL="$HOME/.bun"
+        export PATH="$BUN_INSTALL/bin:$PATH"
         bun test
 
     - name: Build project
       run: |
-        source ~/.bashrc
+        export BUN_INSTALL="$HOME/.bun"
+        export PATH="$BUN_INSTALL/bin:$PATH"
         bun run build
