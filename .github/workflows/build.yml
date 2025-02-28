@@ -10,7 +10,7 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [16.x]
+        node-version: [20.14.0]
 
     steps:
     - name: Checkout repository
@@ -21,7 +21,7 @@ jobs:
         curl -fsSL https://bun.sh/install | bash
         echo 'export BUN_INSTALL="$HOME/.bun"' >> $GITHUB_ENV
         echo 'export PATH="$BUN_INSTALL/bin:$PATH"' >> $GITHUB_ENV
-        source $GITHUB_ENV
+        source $HOME/.bashrc
 
     - name: Install dependencies
       run: bun install
