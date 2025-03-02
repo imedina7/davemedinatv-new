@@ -13,4 +13,10 @@ export {
   faClose,
   faClapperboard,
   faPlay,
+  faPause,
+  faVolumeOff,
+  faVolumeLow,
+  faVolumeHigh,
+  faUpRightAndDownLeftFromCenter,
+  faDownLeftAndUpRightToCenter
 } from "@fortawesome/free-solid-svg-icons";
