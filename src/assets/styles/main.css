@@ -11,5 +11,5 @@
 }
 
 .skeleton-element {
-  @apply bg-slate-600/50 rounded-sm overflow-hidden animate-pulse
+  @apply rounded-sm overflow-hidden animate-pulse
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
   Mesh,
@@ -29,7 +29,7 @@ const container = ref<HTMLDivElement>();
 
 const { scene, camera, renderer } = usePerspective(
   {
-    fov: 45,
+    fov: 60,
     aspect: window.innerWidth / window.innerHeight,
     near: 0.1,
     far: 1000,
@@ -77,7 +77,7 @@ async function loadScene() {
   daveLogo.value = newObj;
   scene.add(newObj);
 
-  camera.position.set(0, 0, 7);
+  camera.position.set(0, -1, 6);
   camera.rotation.set(0, 0, 0);
 
   const ambientLight = new AmbientLight(0xffffff, 2);
@@ -87,11 +87,11 @@ async function loadScene() {
 
 // renderer.domElement.removeAttribute("style");
 
+
 onMounted(() => {
   if (container.value && renderer && scene) {
     container.value.appendChild(renderer.domElement);
     renderer.setClearAlpha(0.0);
-    console.log(renderer.capabilities);
 
     loadScene();
     render();

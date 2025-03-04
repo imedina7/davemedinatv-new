@@ -1,7 +1,8 @@
 /* eslint-disable no-undef */
-require("dotenv").config();
+import { config } from 'dotenv'
 
-module.exports = {
+config()
+export default {
   client: {
     service: {
       name: "my-app",

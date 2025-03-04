@@ -99,8 +99,8 @@ const getClient = async () => {
 export const subscribeToEvent = async (
   type: string,
   method: SubscriptionMethod = SubscriptionMethod.WEBHOOK,
-  sessionId?: string,
   callback?: string,
+  sessionId?: string,
 ) => {
   const client = await getClient();
   return client.post("/eventsub/subscriptions", {

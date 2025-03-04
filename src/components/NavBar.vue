@@ -21,7 +21,7 @@ const streamRun = computed(() => app.streamRunTime);
 const navClass = computed(() =>
   classnames(
     "border-b gap-5 border-b-neutral-900/60 shadow-lg",
-    "bg-black/60 flex fixed inset-0 transition-all duration-200 z-30",
+    "bg-gray-700/60 flex fixed inset-0 transition-all duration-200 z-30",
     "ease-in-out items-center justify-center backdrop-blur-sm dotted-pattern",
     ui.landingRolledUp && !ui.touch.isSwippingY ? "h-14" : "h-screen flex-col",
     { "overflow-hidden": ui.touch.isSwippingY },
