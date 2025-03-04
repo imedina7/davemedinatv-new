@@ -4,6 +4,8 @@ import { computed, onMounted, ref, useTemplateRef } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatDuration } from "@/utils";
 import vFocus from "@/directives/focus";
+import Slider from "./ui/Slider.vue";
+import Seekbar from "./ui/Seekbar.vue";
 
 defineProps<{ video: Video }>();
 
@@ -15,7 +17,7 @@ const seeking = ref(false);
 const time = ref("00:00 / 00:00");
 const progressSeconds = ref(0.0);
 const durationSeconds = ref(0.0);
-const isFullscreen = ref(true);
+const isFullscreen = ref(false);
 const isPlaying = ref(true);
 const showControls = ref(true);
 const timeoutHandle = ref<NodeJS.Timeout | undefined>();
@@ -25,6 +27,11 @@ const hideControls = () => {
     showControls.value = false;
   }, 5000);
 };
+
+const clearControlsHideTimeout = () => {
+  clearTimeout(timeoutHandle.value);
+};
+
 onMounted(() => {
   hideControls();
 });
@@ -39,6 +46,7 @@ const togglePlayback = () => {
   videoElem.value.pause();
   isPlaying.value = false;
 };
+
 const toggleMute = () => {
   if (!videoElem.value) return;
   if (videoElem.value.muted) {
@@ -48,9 +56,8 @@ const toggleMute = () => {
   videoElem.value.muted = true;
 };
 
-const handleVolumeChange = (event: Event) => {
-  if (!event.target || !videoElem.value) return;
-  const newVolume = parseFloat((event.target as HTMLInputElement).value);
+const handleVolumeChange = (newVolume: number) => {
+  if (!videoElem.value) return;
   videoElem.value.volume = newVolume;
   volume.value = newVolume;
 };
@@ -66,11 +73,10 @@ const toggleFullscreen = async () => {
   isFullscreen.value = true;
 };
 
-const handleSeek = (event: Event) => {
+const handleSeek = (progress: number) => {
   if (!videoElem.value) return;
   seeking.value = false;
-  const seekPosition = parseInt((event.target as HTMLInputElement).value);
-  videoElem.value.currentTime = seekPosition;
+  videoElem.value.currentTime = progress;
 };
 
 const handleProgress = (event: Event) => {
@@ -107,14 +113,9 @@ const playIcon = computed(() => {
 const fullscreenIcon = computed(() => {
   if (isFullscreen.value) {
     return "fa-down-left-and-up-right-to-center";
-  } else {
-    return "fa-up-right-and-down-left-from-center";
   }
+  return "fa-up-right-and-down-left-from-center";
 });
-
-const clearControlsHideTimeout = () => {
-  clearTimeout(timeoutHandle.value);
-};
 </script>
 <template>
   <div
@@ -132,6 +133,7 @@ const clearControlsHideTimeout = () => {
       @click="handleVideoClick"
       @timeupdate="handleProgress"
       @loadedmetadata="handleProgress"
+      @ended="() => isPlaying = false"
     ></video>
     <div
       :class="`absolute bg-gradient-to-t from-neutral-950/80 via-neutral-950/50 to-neutral-950/0 bottom-0 w-full h-60 flex flex-col justify-end transition-opacity duration-300 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'} pointer-events-none`"
@@ -145,15 +147,12 @@ const clearControlsHideTimeout = () => {
         @mouseleave="hideControls()"
         class="pointer-events-auto"
       >
-        <div class="w-full h-5">
-          <input
-            type="range"
+        <div class="w-full h-6">
+          <Seekbar
+            @seek="handleSeek"
+            @input="()=>{ seeking = true }"
             :value="progressSeconds"
-            min="0"
-            step="0.01"
             :max="durationSeconds"
-            @change="handleSeek"
-            class="w-full"
           />
         </div>
         <div class="w-full h-12 py-2 flex justify-between">
@@ -170,11 +169,8 @@ const clearControlsHideTimeout = () => {
             >
               <FontAwesomeIcon :icon="speakerIcon" />
             </button>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.001"
+            <Slider
+              :step="0.001"
               @input="handleVolumeChange"
             />
           </div>

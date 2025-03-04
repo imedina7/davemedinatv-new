@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
   Mesh,
@@ -86,6 +86,7 @@ async function loadScene() {
 }
 
 // renderer.domElement.removeAttribute("style");
+
 
 onMounted(() => {
   if (container.value && renderer && scene) {
