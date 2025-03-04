@@ -172,6 +172,7 @@ const fullscreenIcon = computed(() => {
             <Slider
               :step="0.001"
               @input="handleVolumeChange"
+              :value="volume"
             />
           </div>
           <div class="flex gap-3">
