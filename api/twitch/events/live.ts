@@ -4,7 +4,7 @@ import {
   webhookChallengeMiddleware,
 } from "../../../src/services/twitch";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { redis } from "@/services/redisClient";
+import { redis } from "../../../src/services/redisClient";
 
 export default async function handler(
   request: VercelRequest,
