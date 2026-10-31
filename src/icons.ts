@@ -19,5 +19,5 @@ export {
   faVolumeHigh,
   faVolumeMute,
   faUpRightAndDownLeftFromCenter,
-  faDownLeftAndUpRightToCenter
+  faDownLeftAndUpRightToCenter,
 } from "@fortawesome/free-solid-svg-icons";

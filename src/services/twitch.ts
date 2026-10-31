@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { kv } from "@vercel/kv";
+import { redis } from "./redisClient";
 import { createClient } from "./httpClient";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import type { TwitchToken } from "../types/twitch";
@@ -62,7 +62,7 @@ const getTokenFromTwitch = async () => {
 const getToken = async () => {
   try {
     console.log("getting token");
-    const twitchToken = await kv.hgetall<TwitchToken>("twitch:token");
+    const twitchToken = await redis.hgetall<TwitchToken>("twitch:token");
 
     if (twitchToken?.expiresAt && twitchToken.expiresAt < Date.now())
       return twitchToken.token;
@@ -70,7 +70,7 @@ const getToken = async () => {
     console.log("Token not found or expired, requesting a new one...");
     const response = await getTokenFromTwitch();
 
-    await kv.hset<TwitchToken[keyof TwitchToken]>("twitch:token", {
+    await redis.hset("twitch:token", {
       expiresAt: Date.now() + response.expires_in * 1000,
       token: response.access_token,
     });
@@ -129,18 +129,16 @@ export const updateStreamMetadata = async () => {
   const { data } = await getStreamData();
 
   if (data.length) {
-    await kv.hset("stream:metadata", data[0]);
+    await redis.hset("stream:metadata", data[0]);
   }
 };
 
 export const verifyRequest = (request: Record<string, any>) => {
-  if (
-    !(
-      request.headers[TWITCH_MESSAGE_SIGNATURE] &&
-      request.headers[TWITCH_MESSAGE_TIMESTAMP] &&
-      request.headers[TWITCH_MESSAGE_ID]
-    )
-  )
+  if (!(
+    request.headers[TWITCH_MESSAGE_SIGNATURE] &&
+    request.headers[TWITCH_MESSAGE_TIMESTAMP] &&
+    request.headers[TWITCH_MESSAGE_ID]
+  ))
     return false;
   const hmacMessage = getHmacMessage(request);
   if (!hmacMessage) return false;

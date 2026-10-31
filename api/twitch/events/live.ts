@@ -4,7 +4,7 @@ import {
   webhookChallengeMiddleware,
 } from "../../../src/services/twitch";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { kv } from "@vercel/kv";
+import { redis } from "@/services/redisClient";
 
 export default async function handler(
   request: VercelRequest,
@@ -23,13 +23,13 @@ export default async function handler(
   try {
     switch (subscription.type) {
       case "stream.online":
-        await kv.set<boolean>("stream:status", true);
+        await redis.set("stream:status", true);
         await updateStreamMetadata();
         break;
 
       case "stream.offline":
         console.log(`user went offline !`);
-        await kv.set<boolean>("stream:status", false);
+        await redis.set("stream:status", false);
         break;
 
       case "channel.update":

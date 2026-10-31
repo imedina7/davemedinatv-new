@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
-import { config } from 'dotenv'
+import { config } from "dotenv";
 
-config()
+config();
 export default {
   client: {
     service: {

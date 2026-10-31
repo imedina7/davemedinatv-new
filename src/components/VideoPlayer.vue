@@ -4,8 +4,8 @@ import { computed, onMounted, ref, useTemplateRef } from "vue";
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 import { formatDuration } from "@/utils";
 import vFocus from "@/directives/focus";
-import Slider from "./ui/Slider.vue";
-import Seekbar from "./ui/Seekbar.vue";
+import RangeSlider from "./ui/RangeSlider.vue";
+import VideoSeekbar from "./ui/VideoSeekbar.vue";
 
 defineProps<{ video: Video }>();
 
@@ -79,7 +79,7 @@ const handleSeek = (progress: number) => {
   videoElem.value.currentTime = progress;
 };
 
-const handleProgress = (event: Event) => {
+const handleProgress = () => {
   if (!videoElem.value || seeking.value) return;
   const currentTime = formatDuration(videoElem.value.currentTime * 1000);
   const duration = formatDuration(videoElem.value.duration * 1000);
@@ -88,7 +88,7 @@ const handleProgress = (event: Event) => {
   time.value = `${currentTime} / ${duration}`;
 };
 
-const handleVideoClick = (event: Event) => {
+const handleVideoClick = () => {
   togglePlayback();
 };
 
@@ -133,7 +133,7 @@ const fullscreenIcon = computed(() => {
       @click="handleVideoClick"
       @timeupdate="handleProgress"
       @loadedmetadata="handleProgress"
-      @ended="() => isPlaying = false"
+      @ended="() => (isPlaying = false)"
     ></video>
     <div
       :class="`absolute bg-gradient-to-t from-neutral-950/80 via-neutral-950/50 to-neutral-950/0 bottom-0 w-full h-60 flex flex-col justify-end transition-opacity duration-300 ${showControls || !isPlaying ? 'opacity-100' : 'opacity-0'} pointer-events-none`"
@@ -148,9 +148,13 @@ const fullscreenIcon = computed(() => {
         class="pointer-events-auto"
       >
         <div class="w-full h-6">
-          <Seekbar
+          <VideoSeekbar
             @seek="handleSeek"
-            @input="()=>{ seeking = true }"
+            @input="
+              () => {
+                seeking = true;
+              }
+            "
             :value="progressSeconds"
             :max="durationSeconds"
           />
@@ -169,7 +173,7 @@ const fullscreenIcon = computed(() => {
             >
               <FontAwesomeIcon :icon="speakerIcon" />
             </button>
-            <Slider
+            <RangeSlider
               :step="0.001"
               @input="handleVolumeChange"
               :value="volume"

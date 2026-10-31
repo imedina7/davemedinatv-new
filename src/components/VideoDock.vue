@@ -4,7 +4,6 @@ import VideoItem from "./VideoItem.vue";
 import VideoPlayer from "./VideoPlayer.vue";
 import ModalWindow from "./ModalWindow.vue";
 import type { Video } from "@/types";
-import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 const props = defineProps<{
   title: string;

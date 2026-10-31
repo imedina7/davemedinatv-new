@@ -4,12 +4,12 @@ import LivePlayer from "../components/LivePlayer.vue";
 import VideoDock from "../components/VideoDock.vue";
 import { computed } from "vue";
 import { useRootStore } from "@/store";
-import { useVideos } from '@/hooks';
+import { useVideos } from "@/hooks";
 
 const store = useRootStore();
 const isLive = computed(() => store.stream.isLive);
 
-const { videos, loading } = useVideos()
+const { videos, loading } = useVideos();
 </script>
 <template>
   <main class="absolute inset-x-0 bottom-0 md:mx-8">
