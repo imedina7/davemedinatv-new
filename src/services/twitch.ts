@@ -1,5 +1,8 @@
 import * as crypto from "crypto";
-import { redis } from "../../api/redisClient";
+import { Redis } from "@upstash/redis";
+
+export const redis = Redis.fromEnv();
+
 import { createClient } from "./httpClient";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import type { TwitchToken } from "../types/twitch";

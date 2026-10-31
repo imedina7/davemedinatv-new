@@ -1,4 +1,7 @@
-import { redis } from "../redisClient";
+import { Redis } from "@upstash/redis";
+
+export const redis = Redis.fromEnv();
+
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 export default async function handler(
   request: VercelRequest,
