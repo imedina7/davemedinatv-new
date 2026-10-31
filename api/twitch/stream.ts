@@ -1,12 +1,15 @@
-import { kv } from "@vercel/kv";
+import { Redis } from "@upstash/redis";
+
+export const redis = Redis.fromEnv();
+
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 export default async function handler(
   request: VercelRequest,
   response: VercelResponse,
 ) {
   try {
-    const isLive = await kv.get("stream:status");
-    const stream = await kv.hgetall("stream:metadata");
+    const isLive = await redis.get<boolean>("stream:status");
+    const stream = await redis.hgetall("stream:metadata");
     response.status(200).json({
       isLive,
       stream,

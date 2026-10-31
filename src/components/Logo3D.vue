@@ -1,12 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from "vue";
+import { onMounted, ref } from "vue";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
   Mesh,
   Object3D,
   AmbientLight,
   MeshPhysicalMaterial,
-  Vector2,
   Raycaster,
 } from "three";
 import { getCubeMapByName } from "@/utils/helpers/three";
@@ -86,7 +85,6 @@ async function loadScene() {
 }
 
 // renderer.domElement.removeAttribute("style");
-
 
 onMounted(() => {
   if (container.value && renderer && scene) {

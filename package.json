@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": ">=26.13.0"
+  },
   "scripts": {
     "dev": "vite",
     "build": "run-p type-check build-only",
@@ -19,7 +22,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
     "@fortawesome/vue-fontawesome": "^3.0.5",
-    "@vercel/kv": "^1.0.0",
+    "@upstash/redis": "^1.40.0",
     "@vue/apollo-composable": "^4.0.0-beta.11",
     "axios": "^1.6.2",
     "classnames": "^2.3.2",
