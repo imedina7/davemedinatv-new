@@ -123,7 +123,7 @@ This repository is a Vue 3 + TypeScript + Vite web application for davemedinatv.
 - `src/router/index.ts` — Route definitions and router instance.
 - `src/store/index.ts` — Barrel export for all Pinia stores.
 - `src/services/httpClient.ts` — Axios client factory.
-- `src/services/redisClient.ts` — Upstash Redis client (`Redis.fromEnv()`).
+- `api/redisClient.ts` — Upstash Redis client (`Redis.fromEnv()`), shared by serverless API routes.
 
 ## Cursor / Copilot Rules
 

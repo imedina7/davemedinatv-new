@@ -1,4 +1,4 @@
-import { redis } from "../../src/services/redisClient";
+import { redis } from "../redisClient";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 export default async function handler(
   request: VercelRequest,

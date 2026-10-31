@@ -1,5 +1,5 @@
 import * as crypto from "crypto";
-import { redis } from "./redisClient";
+import { redis } from "../../api/redisClient";
 import { createClient } from "./httpClient";
 import type { VercelRequest, VercelResponse } from "@vercel/node";
 import type { TwitchToken } from "../types/twitch";
