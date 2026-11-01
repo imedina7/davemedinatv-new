@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 
 vi.mock("three", async () => {
-  const actual = await vi.importActual("three");
+  const actual = (await vi.importActual("three")) as Record<string, unknown>;
   return {
     ...actual,
     WebGLRenderer: vi.fn().mockImplementation(() => ({
