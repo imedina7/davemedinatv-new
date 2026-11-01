@@ -16,7 +16,12 @@ import {
   THIN_SCREEN_ASPECT_THRESHOLD,
   BASE_CAMERA_DISTANCE,
 } from "@/utils/helpers/three";
-import { MouseEventType, useMouseDirection, usePerspective } from "@/hooks";
+import {
+  MouseEventType,
+  useMouseDirection,
+  usePerspective,
+  useDeviceOrientation,
+} from "@/hooks";
 
 const envMap = getCubeMapByName("Lycksele2");
 
@@ -30,6 +35,15 @@ const mouseClick = useMouseDirection(MouseEventType.CLICK, () => {
     }
   });
 });
+
+const deviceOrientation = useDeviceOrientation();
+
+async function requestOrientationPermission() {
+  const granted = await deviceOrientation.requestPermission();
+  if (granted && !deviceOrientation.listening.value) {
+    deviceOrientation.start();
+  }
+}
 
 const container = ref<HTMLDivElement>();
 
@@ -63,9 +77,22 @@ function updateCameraAndRenderer() {
   }
 }
 
+function getOrientationValues() {
+  if (deviceOrientation.isMobile() && deviceOrientation.listening.value) {
+    // Map device orientation (gamma/beta) to rotation
+    // gamma: left/right tilt (-90 to 90) -> rotation.y
+    // beta: front/back tilt (-180 to 180) -> rotation.x
+    const x = (deviceOrientation.gamma.value / 90) * 0.5;
+    const y = (deviceOrientation.beta.value / 180) * 0.5;
+    return { x, y };
+  }
+  const { x, y } = mouseDirection.value;
+  return { x, y };
+}
+
 function render() {
   requestAnimationFrame(render);
-  const { x, y } = mouseDirection.value;
+  const { x, y } = getOrientationValues();
   raycaster.setFromCamera(mouseClick.value, camera);
   if (daveLogo.value) {
     daveLogo.value.rotation.x = y * 0.5;
@@ -126,4 +153,11 @@ onUnmounted(() => {
 </script>
 <template>
   <div class="absolute inset-0 flex -z-20" ref="container"></div>
+  <button
+    v-if="deviceOrientation.isMobile() && !deviceOrientation.permissionGranted.value"
+    @click="requestOrientationPermission"
+    class="absolute bottom-4 right-4 z-10 px-3 py-1 text-xs bg-white/20 backdrop-blur-sm rounded text-white/70 hover:text-white"
+  >
+    Enable motion
+  </button>
 </template>
