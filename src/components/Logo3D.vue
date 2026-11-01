@@ -13,37 +13,10 @@ import {
   getCubeMapByName,
   isScreenTooThin,
   getCameraDistance,
-  THIN_SCREEN_ASPECT_THRESHOLD,
-  BASE_CAMERA_DISTANCE,
 } from "@/utils/helpers/three";
-import {
-  MouseEventType,
-  useMouseDirection,
-  usePerspective,
-  useDeviceOrientation,
-} from "@/hooks";
+import { usePerspective } from "@/hooks";
 
 const envMap = getCubeMapByName("Lycksele2");
-
-const mouseDirection = useMouseDirection();
-const mouseClick = useMouseDirection(MouseEventType.CLICK, () => {
-  const intersects = raycaster.intersectObjects(scene.children);
-  intersects.forEach((intersect) => {
-    if (intersect.object.isObject3D) {
-      const mesh = intersect.object as Mesh;
-      console.log("mesh clicked", mesh);
-    }
-  });
-});
-
-const deviceOrientation = useDeviceOrientation();
-
-async function requestOrientationPermission() {
-  const granted = await deviceOrientation.requestPermission();
-  if (granted && !deviceOrientation.listening.value) {
-    deviceOrientation.start();
-  }
-}
 
 const container = ref<HTMLDivElement>();
 
@@ -61,6 +34,11 @@ const raycaster = new Raycaster();
 
 const daveLogo = ref<Object3D>();
 
+// Drag state
+const isDragging = ref(false);
+const dragStart = ref({ x: 0, y: 0 });
+const rotationStart = ref({ x: 0, y: 0 });
+
 renderer.setSize(window.innerWidth, window.innerHeight);
 
 function updateCameraAndRenderer() {
@@ -77,27 +55,33 @@ function updateCameraAndRenderer() {
   }
 }
 
-function getOrientationValues() {
-  if (deviceOrientation.isMobile() && deviceOrientation.listening.value) {
-    // Map device orientation (gamma/beta) to rotation
-    // gamma: left/right tilt (-90 to 90) -> rotation.y
-    // beta: front/back tilt (-180 to 180) -> rotation.x
-    const x = (deviceOrientation.gamma.value / 90) * 0.5;
-    const y = (deviceOrientation.beta.value / 180) * 0.5;
-    return { x, y };
+function onPointerDown(event: PointerEvent) {
+  isDragging.value = true;
+  dragStart.value = { x: event.clientX, y: event.clientY };
+  if (daveLogo.value) {
+    rotationStart.value = {
+      x: daveLogo.value.rotation.x,
+      y: daveLogo.value.rotation.y,
+    };
   }
-  const { x, y } = mouseDirection.value;
-  return { x, y };
+  (event.target as HTMLElement)?.setPointerCapture?.(event.pointerId);
+}
+
+function onPointerMove(event: PointerEvent) {
+  if (!isDragging.value || !daveLogo.value) return;
+  const dx = event.clientX - dragStart.value.x;
+  const dy = event.clientY - dragStart.value.y;
+  daveLogo.value.rotation.y = rotationStart.value.y + dx * 0.005;
+  daveLogo.value.rotation.x = rotationStart.value.x + dy * 0.005;
+}
+
+function onPointerUp(event: PointerEvent) {
+  isDragging.value = false;
+  (event.target as HTMLElement)?.releasePointerCapture?.(event.pointerId);
 }
 
 function render() {
   requestAnimationFrame(render);
-  const { x, y } = getOrientationValues();
-  raycaster.setFromCamera(mouseClick.value, camera);
-  if (daveLogo.value) {
-    daveLogo.value.rotation.x = y * 0.5;
-    daveLogo.value.rotation.y = x * 0.5;
-  }
   renderer.render(scene, camera);
 }
 
@@ -139,6 +123,15 @@ onMounted(() => {
 
     updateCameraAndRenderer();
 
+    // Attach drag handlers directly to the canvas element so that
+    // interactions only fire where the canvas is directly visible.
+    // pointer-events on the canvas stays auto; elements in front
+    // (higher z-index) naturally capture their own events first.
+    renderer.domElement.addEventListener("pointerdown", onPointerDown);
+    renderer.domElement.addEventListener("pointermove", onPointerMove);
+    renderer.domElement.addEventListener("pointerup", onPointerUp);
+    renderer.domElement.addEventListener("pointerleave", onPointerUp);
+
     window.addEventListener("resize", updateCameraAndRenderer);
 
     loadScene();
@@ -147,17 +140,14 @@ onMounted(() => {
 });
 
 onUnmounted(() => {
+  renderer.domElement.removeEventListener("pointerdown", onPointerDown);
+  renderer.domElement.removeEventListener("pointermove", onPointerMove);
+  renderer.domElement.removeEventListener("pointerup", onPointerUp);
+  renderer.domElement.removeEventListener("pointerleave", onPointerUp);
   window.removeEventListener("resize", updateCameraAndRenderer);
 });
 
 </script>
 <template>
   <div class="absolute inset-0 flex -z-20" ref="container"></div>
-  <button
-    v-if="deviceOrientation.isMobile() && !deviceOrientation.permissionGranted.value"
-    @click="requestOrientationPermission"
-    class="absolute bottom-4 right-4 z-10 px-3 py-1 text-xs bg-white/20 backdrop-blur-sm rounded text-white/70 hover:text-white"
-  >
-    Enable motion
-  </button>
 </template>
