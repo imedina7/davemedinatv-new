@@ -102,6 +102,23 @@
 ## Remaining Work / Recommendations
 
 1. **Remove real secrets** from `.env` — replace with `.env.example` template.
-2. **Increase branch/function coverage** to 80% by adding tests for `useMouseDirection` and `usePerspective` composables.
-3. **Verify E2E tests** against a running dev server (`yarn dev` + `yarn cy:e2e`).
-4. **Monitor CI** — ensure the new workflow passes on the first PR.
+2. **Verify E2E tests** against a running dev server (`yarn dev` + `yarn cy:e2e`).
+3. **Monitor CI** — ensure the new workflow passes on the first PR.
+
+---
+
+## CI Fix (Node 26 Compatibility)
+
+### Problem
+CI failed with `InvalidCharacterError: The string to be decoded contains invalid characters.` in 15 test files that render components with FontAwesome icons. This is a jsdom + Node 26 incompatibility where Node 26's stricter `atob` implementation rejects characters that jsdom's rendering produces.
+
+### Resolution
+1. **Upgraded jsdom** from 23.2.0 to 28.1.0 (better Node 26 support).
+2. **Added `src/test-setup.ts`** with a Buffer-based `atob`/`btoa` polyfill that handles all characters, replacing Node 26's stricter implementation.
+3. **Registered setup file** in `vitest.config.ts` via `setupFiles`.
+4. **Mocked `requestFullscreen`/`exitFullscreen`** in VideoPlayer tests (jsdom doesn't implement these).
+5. **Updated `yarn.lock`** with new dependency versions.
+
+### Verification
+- All 133 tests pass locally.
+- Coverage maintained above 80%: 96.57% statements, 88.6% branches, 84.84% functions, 96.57% lines.
