@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import {
   Mesh,
@@ -7,8 +7,15 @@ import {
   AmbientLight,
   MeshPhysicalMaterial,
   Raycaster,
+  PerspectiveCamera,
 } from "three";
-import { getCubeMapByName } from "@/utils/helpers/three";
+import {
+  getCubeMapByName,
+  isScreenTooThin,
+  getCameraDistance,
+  THIN_SCREEN_ASPECT_THRESHOLD,
+  BASE_CAMERA_DISTANCE,
+} from "@/utils/helpers/three";
 import { MouseEventType, useMouseDirection, usePerspective } from "@/hooks";
 
 const envMap = getCubeMapByName("Lycksele2");
@@ -41,6 +48,20 @@ const raycaster = new Raycaster();
 const daveLogo = ref<Object3D>();
 
 renderer.setSize(window.innerWidth, window.innerHeight);
+
+function updateCameraAndRenderer() {
+  const width = window.innerWidth;
+  const height = window.innerHeight;
+  const aspect = width / height;
+
+  renderer.setSize(width, height);
+
+  if (camera instanceof PerspectiveCamera) {
+    camera.aspect = aspect;
+    camera.position.z = getCameraDistance(aspect);
+    camera.updateProjectionMatrix();
+  }
+}
 
 function render() {
   requestAnimationFrame(render);
@@ -76,7 +97,7 @@ async function loadScene() {
   daveLogo.value = newObj;
   scene.add(newObj);
 
-  camera.position.set(0, -1, 6);
+  camera.position.set(0, -1, getCameraDistance(window.innerWidth / window.innerHeight));
   camera.rotation.set(0, 0, 0);
 
   const ambientLight = new AmbientLight(0xffffff, 2);
@@ -84,17 +105,24 @@ async function loadScene() {
   scene.add(ambientLight);
 }
 
-// renderer.domElement.removeAttribute("style");
-
 onMounted(() => {
   if (container.value && renderer && scene) {
     container.value.appendChild(renderer.domElement);
     renderer.setClearAlpha(0.0);
 
+    updateCameraAndRenderer();
+
+    window.addEventListener("resize", updateCameraAndRenderer);
+
     loadScene();
     render();
   }
 });
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateCameraAndRenderer);
+});
+
 </script>
 <template>
   <div class="absolute inset-0 flex -z-20" ref="container"></div>
