@@ -27,6 +27,10 @@ describe("VideoPlayer", () => {
       .fn()
       .mockResolvedValue(undefined);
     (HTMLMediaElement.prototype as any).pause = vi.fn();
+    (HTMLElement.prototype as any).requestFullscreen = vi
+      .fn()
+      .mockResolvedValue(undefined);
+    (document as any).exitFullscreen = vi.fn().mockResolvedValue(undefined);
   });
 
   function globalOpts() {
