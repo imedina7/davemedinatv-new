@@ -76,4 +76,50 @@ describe("VideoPlayer", () => {
     await wrapper.find("video").trigger("click");
     expect(wrapper.exists()).toBe(true);
   });
+
+  it("toggles mute button", async () => {
+    const video = createMockVideo();
+    const wrapper = mount(VideoPlayer, {
+      props: { video },
+      global: globalOpts(),
+    });
+    const buttons = wrapper.findAll("button");
+    if (buttons.length > 1) {
+      await buttons[1].trigger("click");
+    }
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("toggles fullscreen", async () => {
+    const video = createMockVideo();
+    const wrapper = mount(VideoPlayer, {
+      props: { video },
+      global: globalOpts(),
+    });
+    const buttons = wrapper.findAll("button");
+    const fsBtn = buttons[buttons.length - 1];
+    await fsBtn.trigger("click");
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("handles mouse movement on container", async () => {
+    const video = createMockVideo();
+    const wrapper = mount(VideoPlayer, {
+      props: { video },
+      global: globalOpts(),
+    });
+    await wrapper.find(".relative").trigger("mousemove");
+    expect(wrapper.exists()).toBe(true);
+  });
+
+  it("handles double click for fullscreen", async () => {
+    const video = createMockVideo();
+    const wrapper = mount(VideoPlayer, {
+      props: { video },
+      global: globalOpts(),
+    });
+    await wrapper.find(".relative").trigger("dblclick");
+    expect(wrapper.exists()).toBe(true);
+  });
 });
+

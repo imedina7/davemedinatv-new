@@ -61,4 +61,13 @@ describe("VideoItem", () => {
     });
     expect(wrapper.exists()).toBe(true);
   });
+
+  it("renders without thumbnail url (v-if false branch)", () => {
+    const video = createMockVideo({ thumbnailUrl: "" });
+    const wrapper = mount(VideoItem, {
+      props: { video },
+      global: { plugins: [pinia, router], components: { FontAwesomeIcon } },
+    });
+    expect(wrapper.find("img").exists()).toBe(false);
+  });
 });

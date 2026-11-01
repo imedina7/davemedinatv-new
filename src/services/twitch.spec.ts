@@ -39,11 +39,14 @@ vi.mock("./httpClient", () => ({
 
 import {
   getToken,
+  getClient,
+  subscribeToEvent,
   getStreamData,
   updateStreamMetadata,
   verifyRequest,
   webhookChallengeMiddleware,
 } from "./twitch";
+import { SubscriptionMethod } from "@/types/twitch";
 
 describe("twitch", () => {
   let mock: MockAdapter;
@@ -242,6 +245,74 @@ describe("twitch", () => {
         id: "1",
         title: "Live",
       });
+    });
+
+    it("does not store when no data", async () => {
+      mockRedis.hgetall.mockResolvedValue({
+        expiresAt: Date.now() + 100000,
+        token: "cached-token",
+      });
+      mock.onGet("/streams").reply(200, { data: [] });
+
+      await updateStreamMetadata();
+
+      expect(mockRedis.hset).not.toHaveBeenCalled();
+    });
+  });
+
+  describe("getClient", () => {
+    it("returns client with token", async () => {
+      mockRedis.hgetall.mockResolvedValue({
+        expiresAt: Date.now() + 100000,
+        token: "cached-token",
+      });
+      const client = await getClient();
+      expect(client).toBeDefined();
+    });
+
+    it("returns client even when redis fails (token undefined)", async () => {
+      mockRedis.hgetall.mockRejectedValue(new Error("redis down"));
+      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+      const client = await getClient();
+      expect(client).toBeDefined();
+      consoleSpy.mockRestore();
+    });
+  });
+
+  describe("subscribeToEvent", () => {
+    it("subscribes via webhook", async () => {
+      mockRedis.hgetall.mockResolvedValue({
+        expiresAt: Date.now() + 100000,
+        token: "cached-token",
+      });
+      mock.onPost("/eventsub/subscriptions").reply(200, { data: {} });
+
+      const result = await subscribeToEvent("stream.online", SubscriptionMethod.WEBHOOK, "https://callback.url");
+
+      expect(result).toBeDefined();
+      expect(mock.history.post.length).toBe(1);
+    });
+
+    it("subscribes via websocket", async () => {
+      mockRedis.hgetall.mockResolvedValue({
+        expiresAt: Date.now() + 100000,
+        token: "cached-token",
+      });
+      mock.onPost("/eventsub/subscriptions").reply(200, { data: {} });
+
+      const result = await subscribeToEvent("stream.online", SubscriptionMethod.WEBSOCKET, undefined, "session-123");
+
+      expect(result).toBeDefined();
+    });
+  });
+
+  describe("getToken error handling", () => {
+    it("logs error when redis fails", async () => {
+      mockRedis.hgetall.mockRejectedValue(new Error("redis down"));
+      const consoleSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+      const token = await getToken();
+      expect(token).toBeUndefined();
+      consoleSpy.mockRestore();
     });
   });
 });

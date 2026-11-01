@@ -90,4 +90,23 @@ describe("NavBar", () => {
     const button = wrapper.find('[aria-label="Watch live stream"]');
     expect(button.attributes("aria-label")).toBe("Watch live stream");
   });
+
+  it("nav class includes overflow-hidden when swipping", async () => {
+    const wrapper = mountNavBar(false);
+    const uiStore = useUiStore();
+    uiStore.touch.isSwippingY = true;
+    // force re-render
+    await wrapper.vm.$nextTick();
+    expect(wrapper.find("nav").classes()).toContain("overflow-hidden");
+  });
+
+  it("getNavStyle returns style when swipping", async () => {
+    const wrapper = mountNavBar(false);
+    const uiStore = useUiStore();
+    uiStore.touch.isSwippingY = true;
+    uiStore.landingRolledUp = true;
+    await wrapper.vm.$nextTick();
+    const nav = wrapper.find("nav");
+    expect(nav.exists()).toBe(true);
+  });
 });

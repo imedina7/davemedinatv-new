@@ -38,11 +38,63 @@ describe("useUiStore", () => {
     expect(store.touch.swipeDeltaY).toBe(50);
   });
 
+  it("swipeTouch horizontal swipe returns early", () => {
+    const store = useUiStore();
+    store.touchStart({ touches: [{ pageX: 10, pageY: 100 }] } as any);
+    store.swipeTouch({ touches: [{ pageX: 100, pageY: 105 }] } as any);
+    expect(store.touch.isSwippingX).toBe(true);
+  });
+
+  it("swipeTouch when landingRolledUp uses Math.min", () => {
+    const store = useUiStore();
+    store.landingRolledUp = true;
+    store.touchStart({ touches: [{ pageX: 10, pageY: 100 }] } as any);
+    store.swipeTouch({ touches: [{ pageX: 10, pageY: 50 }] } as any);
+    expect(store.touch.swipeDeltaY).toBeLessThanOrEqual(0);
+  });
+
+  it("swipeTouch no TouchEvent returns early", () => {
+    const orig = (global as any).TouchEvent;
+    (global as any).TouchEvent = undefined;
+    const store = useUiStore();
+    store.swipeTouch({ touches: [{ pageX: 10, pageY: 50 }] } as any);
+    // no crash
+    (global as any).TouchEvent = orig;
+  });
+
   it("swipeWheel updates swipeDeltaY within bounds", () => {
     const store = useUiStore();
     store.touch.swipeDeltaY = 0;
     store.swipeWheel({ deltaY: 10, view: { innerHeight: 100 } } as any);
     expect(store.touch.swipeDeltaY).toBe(10);
+  });
+
+  it("swipeWheel out of bounds does not update", () => {
+    const store = useUiStore();
+    store.touch.swipeDeltaY = 0;
+    store.swipeWheel({ deltaY: 200, view: { innerHeight: 100 } } as any);
+    expect(store.touch.swipeDeltaY).toBe(0);
+  });
+
+  it("swipeWheel no innerHeight returns early", () => {
+    const store = useUiStore();
+    store.swipeWheel({ deltaY: 10, view: {} } as any);
+    expect(store.touch.swipeDeltaY).toBe(0);
+  });
+
+  it("swipeWheel landingRolledUp unrolls when below threshold", () => {
+    const store = useUiStore();
+    store.landingRolledUp = true;
+    store.touch.swipeDeltaY = 10;
+    store.swipeWheel({ deltaY: -5, view: { innerHeight: 100 } } as any);
+    expect(store.landingRolledUp).toBe(false);
+  });
+
+  it("swipeWheel triggers landingRolledUp when above threshold", () => {
+    const store = useUiStore();
+    store.touch.swipeDeltaY = 0;
+    store.swipeWheel({ deltaY: 40, view: { innerHeight: 100 } } as any);
+    expect(store.landingRolledUp).toBe(true);
   });
 
   it("touchStart records coordinates", () => {
@@ -63,5 +115,26 @@ describe("useUiStore", () => {
     expect(store.touch.swipeDeltaY).toBe(12);
     expect(store.touch.touchXStart).toBe(0);
     expect(store.touch.touchYStart).toBe(0);
+  });
+
+  it("touchEnd triggers $reset when swiping down while rolled up", () => {
+    const store = useUiStore();
+    store.landingRolledUp = true;
+    store.touch.isSwippingY = true;
+    store.touch.touchXStart = 10;
+    store.touch.touchYStart = 100;
+    store.touchEnd({ changedTouches: [{ pageX: 10, pageY: 200 }] } as any);
+    // $reset resets state
+    expect(store.landingRolledUp).toBe(false);
+  });
+
+  it("touchEnd triggers landingRolledUp when swiping up", () => {
+    const store = useUiStore();
+    store.landingRolledUp = false;
+    store.touch.isSwippingY = true;
+    store.touch.touchXStart = 10;
+    store.touch.touchYStart = 100;
+    store.touchEnd({ changedTouches: [{ pageX: 10, pageY: 0 }] } as any);
+    expect(store.landingRolledUp).toBe(true);
   });
 });
