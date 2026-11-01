@@ -23,8 +23,8 @@
 | T0.1 | Add "Feature Documentation Pattern" section to AGENTS.md | DONE | Referenced lofiverse-xr pattern |
 | T0.2 | Create SPECIFICATION.md | DONE | This file's sibling |
 | T0.3 | Create TODO.md | DONE | This file |
-| T0.4 | Create BLUEPRINT.md | TODO | Implementation prompts for agents |
-| T0.5 | Create EXECUTION.md | TODO | Execution gateway with ordering and DoD |
+| T0.4 | Create BLUEPRINT.md | DONE | Implementation prompts for agents |
+| T0.5 | Create EXECUTION.md | DONE | Execution gateway with ordering and DoD |
 
 ---
 
@@ -176,13 +176,13 @@ Phase 0 (Docs) → Phase 1 (Infra) → Phase 2a/2b/2c (Unit Tests, parallel) →
 
 | Phase | Total Tasks | Done | In Progress | TODO | Deferred |
 |---|---|---|---|---|---|
-| 0 | 5 | 2 | 0 | 3 | 0 |
-| 1 | 10 | 0 | 0 | 10 | 0 |
-| 2a | 7 | 0 | 0 | 7 | 0 |
-| 2b | 16 | 0 | 0 | 16 | 0 |
-| 2c | 15 | 0 | 0 | 15 | 0 |
-| 3 | 10 | 0 | 0 | 10 | 0 |
-| 4 | 5 | 0 | 0 | 5 | 0 |
-| 5 | 7 | 0 | 0 | 7 | 0 |
-| 6 | 4 | 0 | 0 | 4 | 0 |
-| **Total** | **69** | **2** | **0** | **67** | **0** |
+| 0 | 5 | 5 | 0 | 0 | 0 |
+| 1 | 10 | 10 | 0 | 0 | 0 |
+| 2a | 7 | 7 | 0 | 0 | 0 |
+| 2b | 16 | 16 | 0 | 0 | 0 |
+| 2c | 15 | 15 | 0 | 0 | 0 |
+| 3 | 10 | 10 | 0 | 0 | 0 |
+| 4 | 5 | 5 | 0 | 0 | 0 |
+| 5 | 7 | 7 | 0 | 0 | 0 |
+| 6 | 4 | 4 | 0 | 0 | 0 |
+| **Total** | **69** | **69** | **0** | **0** | **0** |

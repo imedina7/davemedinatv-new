@@ -1,0 +1,22 @@
+{
+  "isLive": true,
+  "stream": {
+    "id": "123",
+    "title": "Test Stream",
+    "started_at": "2026-01-01T00:00:00Z",
+    "category_name": "Just Chatting",
+    "game_name": "Just Chatting",
+    "thumbnail_url": "https://example.com/thumb.jpg",
+    "tags": ["english"],
+    "viewer_count": "100",
+    "user_id": "123",
+    "is_mature": false,
+    "user_name": "davemedinatv",
+    "content_classification_labels": [],
+    "language": "en",
+    "game_id": "123",
+    "tag_ids": [],
+    "user_login": "davemedinatv",
+    "type": "live"
+  }
+}

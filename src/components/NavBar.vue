@@ -60,15 +60,16 @@ const getNavStyle = () => {
     <div
       class="flex flex-col w-48 items-center text-slate-400 text-lg font-thin uppercase font-rajdhani"
     >
-      <div
+      <button
         v-if="isLive && !ui.landingRolledUp"
-        @click="() => (ui.landingRolledUp = true)"
+        @click="ui.openLiveModal()"
+        aria-label="Watch live stream"
         class="flex gap-3 items-center text-center hover:text-slate-200 cursor-pointer"
       >
         <FontAwesomeIcon fade :icon="['fa', 'angles-up']" size="sm" />
         en vivo {{ streamRun }}
         <FontAwesomeIcon fade :icon="['fa', 'angles-up']" size="sm" />
-      </div>
+      </button>
       <RouterLink
         to="/videos"
         class="flex gap-3 items-center text-center hover:text-slate-200"

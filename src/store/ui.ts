@@ -6,6 +6,7 @@ export const useUiStore = defineStore("ui", {
   state: () => ({
     isVideoOverlayOpen: false,
     landingRolledUp: false,
+    isLiveModalOpen: false,
     touch: {
       swipeDeltaY: 0,
       swipeDeltaX: 0,
@@ -100,6 +101,14 @@ export const useUiStore = defineStore("ui", {
         this.touch.isSwippingX = false;
         this.touch.isSwippingY = false;
       }
+    },
+
+    openLiveModal() {
+      this.isLiveModalOpen = true;
+    },
+
+    closeLiveModal() {
+      this.isLiveModalOpen = false;
     },
   },
 });
