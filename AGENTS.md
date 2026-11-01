@@ -125,6 +125,55 @@ This repository is a Vue 3 + TypeScript + Vite web application for davemedinatv.
 - `src/services/httpClient.ts` — Axios client factory.
 - `api/redisClient.ts` — Upstash Redis client (`Redis.fromEnv()`), shared by serverless API routes.
 
+## Feature Documentation Pattern
+
+When creating documentation for a new feature or major change, follow the established pattern:
+
+```
+docs/{feature-name}/
+├── BLUEPRINT.md         # Step-by-step implementation guide for agents (MINIMUM - every feature area MUST have one)
+├── SPECIFICATION.md     # What to build, why, and architectural decisions
+├── TODO.md              # Task tracker with status (TODO/IN_PROGRESS/DONE/DEFERRED)
+├── EXECUTION.md         # Sequential implementation prompts with verification
+└── IMPLEMENTATION.md    # Post-implementation summary with code references (only if issues arise)
+```
+
+**Minimum requirement**: Every feature area MUST have all four of: `SPECIFICATION.md`, `BLUEPRINT.md`, `TODO.md`, and an `EXECUTION.md`. Other documents are created as needed.
+
+### When to Create Which Doc
+
+| Document | Create When |
+|---|---|
+| `BLUEPRINT.md` | **Always** - implementation guide with known constraints, verification commands, and step-by-step prompts |
+| `SPECIFICATION.md` | **Always** - New feature, major refactor, or gap closure (defines scope, architecture decisions) |
+| `TODO.md` | **Always** - Task has 5+ subtasks (track progress) |
+| `EXECUTION.md` | **Always** - Feature needs sequential, ordered implementation steps |
+| `IMPLEMENTATION.md` | Post-completion summary for future reference (code locations, key decisions) — only if issues arise |
+
+### Documentation Maintenance
+
+- **Update `docs/index.md`** whenever you create a new documentation directory
+- **Cross-reference related docs** — link to related feature docs
+- **Mark status** — indicate whether docs are active, in-progress, or completed
+- **Date-stamp** major updates
+
+### Pre-Planning Research Protocol
+
+Before creating any plan (feature, bugfix, extension, or remediation), you MUST perform a thorough discovery phase:
+
+1. **Consult `docs/`** — locate all documentation relevant to the task's domain area
+2. **Read relevant `docs/`** — for the target feature area, review in order:
+   - `BLUEPRINT.md` — implementation guide and known constraints (minimum — every feature area MUST have one)
+   - `SPECIFICATION.md` — what to build and why, architecture decisions
+   - `TODO.md` — existing plans and task status
+   - `EXECUTION.md` / `IMPLEMENTATION.md` — completed work and code references
+3. **Search the codebase** — find existing patterns, related modules, tests, and guard configurations
+4. **Check for existing open issues** — avoid duplicating work already tracked in `docs/{area}/TODO.md`
+
+**Verification:** Before finalizing any plan, confirm you have read at minimum:
+- The feature area's `BLUEPRINT.md`
+- Relevant source files and types in the codebase
+
 ## Cursor / Copilot Rules
 
 No `.cursorrules`, `.cursor/rules/`, or `.github/copilot-instructions.md` files exist in this repository.

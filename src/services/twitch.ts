@@ -62,12 +62,12 @@ const getTokenFromTwitch = async () => {
   ).data;
 };
 
-const getToken = async () => {
+export const getToken = async () => {
   try {
     console.log("getting token");
     const twitchToken = await redis.hgetall<TwitchToken>("twitch:token");
 
-    if (twitchToken?.expiresAt && twitchToken.expiresAt < Date.now())
+    if (twitchToken?.expiresAt && twitchToken.expiresAt > Date.now())
       return twitchToken.token;
 
     console.log("Token not found or expired, requesting a new one...");
@@ -84,7 +84,7 @@ const getToken = async () => {
   }
 };
 
-const getClient = async () => {
+export const getClient = async () => {
   console.log("getting client");
   try {
     const token = await getToken();
@@ -137,11 +137,13 @@ export const updateStreamMetadata = async () => {
 };
 
 export const verifyRequest = (request: Record<string, any>) => {
-  if (!(
-    request.headers[TWITCH_MESSAGE_SIGNATURE] &&
-    request.headers[TWITCH_MESSAGE_TIMESTAMP] &&
-    request.headers[TWITCH_MESSAGE_ID]
-  ))
+  if (
+    !(
+      request?.headers?.[TWITCH_MESSAGE_SIGNATURE] &&
+      request?.headers?.[TWITCH_MESSAGE_TIMESTAMP] &&
+      request?.headers?.[TWITCH_MESSAGE_ID]
+    )
+  )
     return false;
   const hmacMessage = getHmacMessage(request);
   if (!hmacMessage) return false;
