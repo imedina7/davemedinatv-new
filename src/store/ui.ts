@@ -80,6 +80,9 @@ export const useUiStore = defineStore("ui", {
       const touchEndX = ev.changedTouches[0].pageX;
       const touchEndY = ev.changedTouches[0].pageY;
 
+      // Capture start position before resetting
+      const startY = this.touch.touchYStart;
+
       this.touch.swipeDeltaX = this.touch.touchXStart - touchEndX;
       this.touch.swipeDeltaY = this.touch.touchYStart - touchEndY;
       this.touch.touchXStart = 0;
@@ -93,9 +96,14 @@ export const useUiStore = defineStore("ui", {
         return;
       }
 
+      // Only allow curtain drop when touch started in top third of screen
+      const startedInTopThird =
+        startY > 0 && startY <= (window.innerHeight || 0) / 3;
+
       if (
         (!this.landingRolledUp || this.touch.isSwippingY) &&
-        this.touch.swipeDeltaY > SWIPE_ACTION_THRESHOLD
+        this.touch.swipeDeltaY > SWIPE_ACTION_THRESHOLD &&
+        startedInTopThird
       ) {
         this.landingRolledUp = true;
         this.touch.isSwippingX = false;

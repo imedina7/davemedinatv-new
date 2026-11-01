@@ -137,4 +137,25 @@ describe("useUiStore", () => {
     store.touchEnd({ changedTouches: [{ pageX: 10, pageY: 0 }] } as any);
     expect(store.landingRolledUp).toBe(true);
   });
+
+  it("touchEnd ignores curtain drop when touch starts below top third", () => {
+    const store = useUiStore();
+    store.landingRolledUp = false;
+    store.touch.isSwippingY = true;
+    store.touch.touchXStart = 10;
+    // Start below top third (window.innerHeight / 3)
+    store.touch.touchYStart = (window.innerHeight || 768) * 0.5;
+    store.touchEnd({ changedTouches: [{ pageX: 10, pageY: -50 }] } as any);
+    expect(store.landingRolledUp).toBe(false);
+  });
+
+  it("touchEnd allows curtain drop when touch starts in top third", () => {
+    const store = useUiStore();
+    store.landingRolledUp = false;
+    store.touch.isSwippingY = true;
+    store.touch.touchXStart = 10;
+    store.touch.touchYStart = 10; // top third
+    store.touchEnd({ changedTouches: [{ pageX: 10, pageY: -50 }] } as any);
+    expect(store.landingRolledUp).toBe(true);
+  });
 });

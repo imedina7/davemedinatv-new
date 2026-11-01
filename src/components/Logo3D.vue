@@ -71,8 +71,10 @@ function onPointerMove(event: PointerEvent) {
   if (!isDragging.value || !daveLogo.value) return;
   const dx = event.clientX - dragStart.value.x;
   const dy = event.clientY - dragStart.value.y;
-  daveLogo.value.rotation.y = rotationStart.value.y + dx * 0.005;
-  daveLogo.value.rotation.x = rotationStart.value.x + dy * 0.005;
+  // Increase influence for touch (mobile) drags
+  const multiplier = event.pointerType === "touch" ? 0.015 : 0.005;
+  daveLogo.value.rotation.y = rotationStart.value.y + dx * multiplier;
+  daveLogo.value.rotation.x = rotationStart.value.x + dy * multiplier;
 }
 
 function onPointerUp(event: PointerEvent) {
