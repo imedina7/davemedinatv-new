@@ -122,3 +122,15 @@ CI failed with `InvalidCharacterError: The string to be decoded contains invalid
 ### Verification
 - All 133 tests pass locally.
 - Coverage maintained above 80%: 96.57% statements, 88.6% branches, 84.84% functions, 96.57% lines.
+
+---
+
+## CI Fix 2: Cypress Component Test Env Vars
+
+### Problem
+Cypress component test `LivePlayer.cy.ts` failed in CI because `import.meta.env.VITE_TWITCH_LOGIN` and `VITE_BASE_URL` were `undefined` at build time (no `.env` file in CI, and env vars weren't propagated to Cypress's internal Vite dev server).
+
+### Resolution
+1. Added a "Create .env file" step in the CI workflow that writes `VITE_TWITCH_LOGIN=davemedinatv` and `VITE_BASE_URL=localhost` to `.env`.
+2. Set env vars on the component test, build, and E2E steps as well (belt-and-suspenders).
+3. The `.env` file is gitignored but created during CI.

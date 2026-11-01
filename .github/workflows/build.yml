@@ -25,14 +25,25 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Create .env file
+        run: |
+          echo "VITE_TWITCH_LOGIN=davemedinatv" >> .env
+          echo "VITE_BASE_URL=localhost" >> .env
+
       - name: Run tests with coverage
         run: yarn test:coverage
 
       - name: Run Cypress component tests
         run: yarn cy:component
+        env:
+          VITE_TWITCH_LOGIN: davemedinatv
+          VITE_BASE_URL: localhost
 
       - name: Build project
         run: yarn build
+        env:
+          VITE_TWITCH_LOGIN: davemedinatv
+          VITE_BASE_URL: localhost
 
   cypress-e2e:
     runs-on: ubuntu-latest
